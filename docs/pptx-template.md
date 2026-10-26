@@ -1,6 +1,6 @@
 # 礼拝スライドの生成の設計（背景・部品・式順）
 
-**状態: 実装済み（2026-10-25、ブランチ `gen-1`。本番は未反映）。** ARCHITECTURE.md §18・§14.9 と README はこの文書を指す。本番で 4 エリアとも作って確かめたら「本番」にし、使わなくなった `template/worship.pptx`・`template/verse-spTree.xml` を消して、`src/lib/file-keys.mjs` の決まりからも外す。
+**状態: 実装済み（2026-10-25、ブランチ `gen-1`。本番は未反映）。** ARCHITECTURE.md §18・§14.9 と docs/OPERATIONS.md はこの文書を指す。本番で 4 エリアとも作って確かめたら「本番」にし、使わなくなった `template/worship.pptx`・`template/verse-spTree.xml` を消して、`src/lib/file-keys.mjs` の決まりからも外す。
 
 ## 0. なぜ作り直すか
 
@@ -243,7 +243,7 @@
 1. （済み）見本（`out/template/` の `背景.pptx`・`背景.json`・`部品/`・`式順/`）をユーザーが確認した。`組み立て確認/` は、式順のとおりに部品を背景に載せただけ（目印はそのまま）の確認用。`3色の試し（…）.pptx` は、背景色と文字色を置き換えた試し（主日礼拝の部品に、歌詞 101・233 と交読文 1 の実物を足したもの）。
 2. （済み、`gen-1`）生成コードを ①〜⑤ に作り替え、古い目印・見出しで探す処理・空きスロット・`verse-spTree.xml` を読む処理をすべて消した。試験と手元の両方の画面で確かめた。
 3. 新しいファイルはいまと別のキーなので、**先に本番へ上げても、いまのコードには影響しない**。`gen-1` を preview に載せる → preview のマスタの「テンプレ」から一式を上げる（本番の KV に入る）→ preview で 4 エリアとも作って確かめる → main に反映 → 本番で確かめる → 管理画面の「使わなくなったファイル」で `template/worship.pptx`・`template/verse-spTree.xml` を消す → `src/lib/file-keys.mjs` から外す。
-4. この文書を「実施済み」にし、ARCHITECTURE.md §18・README をこの文書へのリンクに置き換える。
+4. この文書を「実施済み」にし、ARCHITECTURE.md §18・docs/OPERATIONS.md をこの文書へのリンクに置き換える。
 
 ## 10. 決めたこと（2026-10-24）
 

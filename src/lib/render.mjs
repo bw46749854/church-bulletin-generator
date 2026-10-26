@@ -36,7 +36,7 @@ export async function getBrowser() {
   if (!launching) {
     launching = chromium.launch({ args: ['--disable-gpu'] })
       .then(b => { b.on('disconnected', () => { if (browser === b) browser = null; }); browser = b; return b; })
-      .catch(e => { throw new Error('Chromium を起動できません: ' + e.message.split('\n')[0] + '（README の「不足ライブラリ」を確認してください）'); })
+      .catch(e => { throw new Error('Chromium を起動できません: ' + e.message.split('\n')[0] + '（docs/OPERATIONS.md の「不足ライブラリ」を確認してください）'); })
       .finally(() => { launching = null; });
   }
   return launching;

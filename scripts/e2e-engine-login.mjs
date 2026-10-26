@@ -1,6 +1,6 @@
 // PDF の準備中・失敗・受付のログイン切れのときの保存・プレビューの知らせを、手元の Chromium で確かめる（ARCHITECTURE.md §14.1・§14.2・§6.1）。
 // 使い方: node scripts/e2e-engine-login.mjs [入力画面の URL]   （既定 http://localhost:8787/input-shuho/。開発サーバを先に起動しておく）
-// 保存が成功する場面がある（data/weeks を書く）ので、scratchpad の写しで起動したサーバに流す（README「試験」）。ONLY=名前,… で場面を絞る。
+// 保存が成功する場面がある（data/weeks を書く）ので、scratchpad の写しで起動したサーバに流す（docs/OPERATIONS.md「試験」）。ONLY=名前,… で場面を絞る。
 //
 // 真似ること:
 //   - PDF エンジンが眠る（Render）: api/bootstrap の engine_sleeps を立て、api/engine の返事をこちらで決める
@@ -15,7 +15,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const libs = resolve(root, '.local-libs/usr/lib/x86_64-linux-gnu');   // WSL2 の Ubuntu で Chromium に足りないライブラリ（README）
+const libs = resolve(root, '.local-libs/usr/lib/x86_64-linux-gnu');   // WSL2 の Ubuntu で Chromium に足りないライブラリ（docs/OPERATIONS.md）
 if (existsSync(libs)) process.env.LD_LIBRARY_PATH = [libs, process.env.LD_LIBRARY_PATH].filter(Boolean).join(':');
 
 const BASE = process.argv[2] || 'http://localhost:8787/input-shuho/';

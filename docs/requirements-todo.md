@@ -101,7 +101,7 @@
 **動き**
 - `scripts/make-recovery.mjs`（開発者が実行）: 指定フォルダに「コード一式（git archive）＋ `node_modules` ＋ Playwright の Chromium ＋ フォント ＋ `data/`（項目 6 の写し）＋ 起動用 `start.bat`／`start.sh`」を作る
 - 起動 → `localhost:8787/input-shuho/` が開く。保存先はフォルダ内の `data/`、PDF は手元の Chromium。ログインなし（ローカルは元々なし）
-- 復旧後: オフラインで作った週の JSON を D1 に戻す手順（`seed-d1.mjs data/weeks/<日付>.json --remote`）を README に明記。**D1 が正、recovery は写し**。両方で同じ週を直した場合は D1 を優先し、手元の分は人が読み比べる
+- 復旧後: オフラインで作った週の JSON を D1 に戻す手順（`seed-d1.mjs data/weeks/<日付>.json --remote`）を docs/OPERATIONS.md に明記。**D1 が正、recovery は写し**。両方で同じ週を直した場合は D1 を優先し、手元の分は人が読み比べる
 - 年に 1 回は実際に起動して PDF を出す（試していない逃げ道は無いのと同じ）
 
 **決め** Docker は使わない（Windows に Docker Desktop を入れる手間と部品が増えるだけ）。
@@ -302,7 +302,7 @@ npm run setup -- --pull            正本から取得（合言葉が要る）
 
 | | やること | これだけで得られるもの |
 |---|---|---|
-| 1 | PR プレビューの経路を確かめ、README に「PR を出すと URL が出る」と書く | **AI 抜きでも、試して見て戻せる**ようになる |
+| 1 | PR プレビューの経路を確かめ、docs/OPERATIONS.md に「PR を出すと URL が出る」と書く | **AI 抜きでも、試して見て戻せる**ようになる |
 | 2 | `docs/zones.md` と `docs/ARCHITECTURE.md`（依存の出典） | AI にも人にも効く土台 |
 | 3 | 型つきの要求フォーム → PR 作成 | 非エンジニアの 8 割 |
 | 4 | 自由記述 → Gemini → PR | 残りの 2 割 |

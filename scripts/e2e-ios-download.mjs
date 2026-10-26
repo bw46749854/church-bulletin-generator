@@ -18,7 +18,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const libs = resolve(root, '.local-libs/usr/lib/x86_64-linux-gnu');   // WSL2 の Ubuntu で Chromium に足りないライブラリ（README）
+const libs = resolve(root, '.local-libs/usr/lib/x86_64-linux-gnu');   // WSL2 の Ubuntu で Chromium に足りないライブラリ（docs/OPERATIONS.md）
 if (existsSync(libs)) process.env.LD_LIBRARY_PATH = [libs, process.env.LD_LIBRARY_PATH].filter(Boolean).join(':');
 
 const BASE = process.argv[2] || 'http://localhost:8787/input-shuho/';

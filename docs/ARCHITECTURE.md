@@ -11,11 +11,11 @@
 
 | 文書 | 役割 | この文書との関係 |
 |---|---|---|
-| `README.md` | 手順書（コマンド・設定のやり方） | 「どう操作するか」は README、「何がどうなっているか」はここ |
+| `docs/OPERATIONS.md` | 手順書（コマンド・設定のやり方） | 「どう操作するか」は docs/OPERATIONS.md、「何がどうなっているか」はここ |
 | `docs/requirements-todo.md` | 要件の検討記録・未決事項 | 決まって実装されたものは、ここに要約して取り込む。検討の経緯は向こうに残す |
 | `docs/zones.md` | AI・協力者に触らせてよい範囲 | 依存関係の説明はここ（§10）を出典にする |
 | `docs/slides-role.md` | pptx 担当者ページと権限の分け方の設計・判断の経緯・作業の記録（2026-10-22 設計、10-23 実装） | 仕組みの要約は §20。なぜそうしたかは向こう |
-| `docs/pptx-template.md` | 礼拝スライドの生成の設計＝背景・部品・式順の分け方と目印 `{{…}}` の一覧（2026-10-24 案） | 実施したら §18 と README の「テンプレの約束」をここへのリンクに置き換える |
+| `docs/pptx-template.md` | 礼拝スライドの生成の設計＝背景・部品・式順の分け方と目印 `{{…}}` の一覧（2026-10-24 案） | 実施したら §18 と docs/OPERATIONS.md の「テンプレの約束」をここへのリンクに置き換える |
 | `docs/file-store.md` | ファイルの置き場＝中身は KV に指紋の名前で上書きせず置き、今の版の目次を D1 に持つ。控えは 14 日で毎朝片付ける。移行の手順（2026-10-25 実装） | §2.1・§2.2・§2.6 はこの形で書いた。細かい動きはこちら |
 | `docs/spike-report.md` | 段 1（紙面の再現）の記録 | 履歴。参照のみ |
 | 要件定義 v7（アーティファクト） | 最初の要件 | 履歴。以後の決定で上書きされた点は §11 |
@@ -54,7 +54,7 @@
 | 担当者ページ（リハーサル） | `https://samplechurch-slides.example.workers.dev/input-shuho/slides/` | 持たない（内線で週報 Worker の窓口へ） | 週報 Worker に頼む | Cloudflare Access（名簿 `shuho-slides`） | 2026-10-23〜（§20） |
 | 事前確認（`preview` ブランチ） | `https://preview-samplechurch-shuho.example.workers.dev/input-shuho/`、担当者ページは `https://preview-samplechurch-slides.example.workers.dev/input-shuho/slides/` | **リハーサルと同じ** D1・KV | Render | Cloudflare Access（同じ） | 2026-10-23〜。本番に出す前に実機で試す。担当者ページの版は内線で**本番の**週報 Worker につながる |
 | ローカル開発 | `http://localhost:8787/input-shuho/`（`npm run dev`） | `data/`（無ければ `data/examples/`） | Playwright | なし | 開発用 |
-| recovery（障害時） | 同上（`start.bat`） | フォルダ内 `data/` | 同梱 Chromium | なし | 手順のみ（README） |
+| recovery（障害時） | 同上（`start.bat`） | フォルダ内 `data/` | 同梱 Chromium | なし | 手順のみ（docs/OPERATIONS.md） |
 | 本番（教会アカウント） | 未定（`www.example.com/input-shuho/` の予定） | — | Cloudflare の予定 | Worker 単位の Access の予定（カード不要。§6） | **未構築** |
 
 ### ブランチと反映（2026-10-23 決定）
@@ -257,7 +257,7 @@ Y の次週欄（①②共通。どの場合も同じ）:
 
 ### 4.1 前提（保存の考え方）
 
-- **入力は画面のメモリにだけある。「保存」を押すまで、サーバーにも端末にも残らない。** 下書き・localStorage・自動保存は持たない（ユーザーの決定、README「設計上の約束」）。
+- **入力は画面のメモリにだけある。「保存」を押すまで、サーバーにも端末にも残らない。** 下書き・localStorage・自動保存は持たない（ユーザーの決定、docs/OPERATIONS.md「設計上の約束」）。
 - タブを閉じる・再読み込みする・別の週に切り替えるときに保存していない変更があれば、ブラウザの確認が出る（`beforeunload`、`openWeek` の `confirm`）。ただし iPad・スマホでブラウザがタブを裏で捨てたときや、OS・ブラウザが落ちたときは**確認なしで消える**。
 
 ### 4.2 開いたとき（`init`）
@@ -910,7 +910,7 @@ Workers Logs では、iPad の保存 5 回はどれもサーバーで成功（20
 
 ## 付録: 文書の間の食い違い（2026-10-11 に見つけたもの）
 
-- ~~`README.md`「本番（Cloudflare Worker）」は「Cloudflare Access は使わない」と書いていた~~ → 2026-10-24 に直した。いまは本番も Worker 単位の Access を使う予定（§6）。
-- ~~`README.md`「年間の固定文」は聖句・標語を週データと書いていた~~ → 2026-10-11 に「据え置きのデータ」の節に書き直した。
-- `README.md` の API 一覧には、その後に足した `publish`・`engine`・`pdf-stats`・`sync/*`・`files/*`・`masters/texts`・`bible*` が入っていない。全部の口は `src/lib/api.mjs` の `handle` を見る。
+- ~~`docs/OPERATIONS.md`「本番（Cloudflare Worker）」は「Cloudflare Access は使わない」と書いていた~~ → 2026-10-24 に直した。いまは本番も Worker 単位の Access を使う予定（§6）。
+- ~~`docs/OPERATIONS.md`「年間の固定文」は聖句・標語を週データと書いていた~~ → 2026-10-11 に「据え置きのデータ」の節に書き直した。
+- `docs/OPERATIONS.md` の API 一覧には、その後に足した `publish`・`engine`・`pdf-stats`・`sync/*`・`files/*`・`masters/texts`・`bible*` が入っていない。全部の口は `src/lib/api.mjs` の `handle` を見る。
 - ~~`data/examples/weeks/` のサンプルには、もう読まない `verses` が残っている~~ → 2026-10-26 に消し、今の新しい週の形（`newWeekFrom`）に合わせた（題の改行位置・休止・次週の中高科・引用聖句 `slides` など）。
