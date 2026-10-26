@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ログインできました</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { margin: 0; font-family: system-ui, -apple-system, "Hiragino Sans", "Yu Gothic UI", sans-serif; background: Canvas; color: CanvasText; }
+  main { max-width: 32rem; margin: 18vh auto 0; padding: 0 16px; line-height: 1.7; }
+  h1 { font-size: 1.4rem; margin: 0 0 .6rem; }
+</style>
+</head>
+<body>
+<main>
+  <h1>ログインできました</h1>
+  <p>このタブを閉じて、週報の画面に戻ってください。<br>「もう一度『保存』を押してください」と出ていたら、押してください。</p>
+</main>
+<script>
+  // 入力画面の「ログインし直す」が開くページ（ARCHITECTURE.md §6.1）。ここが開けた＝受付（Cloudflare Access）を通れた。
+  // 元の画面に知らせて（元の画面は確かめ直して知らせを消す）、このタブを閉じる。閉じられなければ上の文のとおり手で閉じてもらう
+  try { new BroadcastChannel('shuho-login').postMessage('ok'); } catch { /* 無ければ、元の画面が前に出たときに確かめ直す */ }
+  setTimeout(() => window.close(), 1500);
+</script>
+</body>
+</html>

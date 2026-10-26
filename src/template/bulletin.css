@@ -1,0 +1,206 @@
+/* 週報テンプレート — 座標はすべて原本 PDF (2026-07-19) から実測した mm 値 */
+@font-face { font-family: "BIZ UDPMincho"; src: local("BIZ UDPMincho"), url("../fonts/BIZUDPMincho-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "BIZ UDPMincho"; src: url("../fonts/BIZUDPMincho-Bold.ttf");    font-weight: 700; }
+@font-face { font-family: "BIZ UDPGothic"; src: local("BIZ UDPGothic"), url("../fonts/BIZUDPGothic-Regular.ttf"); font-weight: 400; }
+@font-face { font-family: "BIZ UDPGothic"; src: url("../fonts/BIZUDPGothic-Bold.ttf");    font-weight: 700; }
+@font-face { font-family: "IPAPMincho"; src: local("IPAPMincho"), url("../fonts/ipamp.ttf"); }   /* local(): Render のコンテナには同じフォントを焼き込んである（取りに行かない）。無ければ url */    /* IPA P明朝：かなが詰まる（原本の MS P明朝と同じ幅感） */
+@font-face { font-family: "IPAPGothic"; src: local("IPAPGothic"), url("../fonts/ipagp.ttf"); }
+@font-face { font-family: "IPAexMincho"; src: local("IPAexMincho"), url("../fonts/ipaexm.ttf"); }   /* 等幅（比較用） */
+@font-face { font-family: "IPAexGothic"; src: local("IPAexGothic"), url("../fonts/ipaexg.ttf"); }
+
+@page { size: A4 landscape; margin: 0; }
+:root {
+  --mincho: "IPAPMincho", "MS PMincho", serif;
+  --gothic: "IPAPGothic", "MS PGothic", sans-serif;
+  --fs: 10pt;                 /* 本文 */
+  --lw: 0.5pt;                /* 罫線の太さ（原本は全て 0.5pt） */
+}
+/* 罫線は border ではなく box-shadow で引く：Chromium は 1px 未満の border を 1px(0.26mm) に丸めるが、影は 0.5pt(0.18mm) のまま出る */
+/* フォント候補の切替（比較用）。body.font-ipaex で等幅の IPAex、body.font-biz で BIZ UD に */
+body.font-ipaex {
+  --mincho: "IPAexMincho", "MS PMincho", serif;
+  --gothic: "IPAexGothic", "MS PGothic", sans-serif;
+}
+body.font-biz {
+  --mincho: "BIZ UDPMincho", "MS PMincho", serif;
+  --gothic: "BIZ UDPGothic", "MS PGothic", sans-serif;
+}
+html, body { margin: 0; padding: 0; background: #fff; }
+body { font-family: var(--mincho); font-size: var(--fs); color: #000; line-height: 1.2;
+       -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+* { box-sizing: border-box; }
+
+.page { position: relative; width: 297mm; height: 210mm; overflow: hidden; page-break-after: always; }
+.page:last-child { page-break-after: auto; }
+.box { position: absolute; box-shadow: inset 0 0 0 var(--lw) #000; overflow: hidden; }
+
+/* 均等割り付け（両端揃え・最終行も） */
+.dist { text-align: justify; text-align-last: justify; text-justify: distribute; }
+.gothic { font-family: var(--gothic); }
+.center { text-align: center; }
+.right { text-align: right; }
+.ul { text-decoration: underline; text-underline-offset: 0.6mm; text-decoration-thickness: 0.4pt; }
+.nowrap { white-space: nowrap; }
+
+/* ---------- 1ページ目 ---------- */
+/* 主日礼拝 */
+#morning { left: 7.62mm; top: 10.34mm; width: 85.54mm; height: 192.18mm; padding: 0 0.8mm 0 2.1mm; }
+#morning .title { font-family: var(--gothic); text-align: center; margin-top: 1.2mm; height: 5mm; line-height: 5mm; }
+#morning .head { position: absolute; left: 2.1mm; right: 0.8mm; top: 6.6mm; }
+#morning .head .row { display: flex; justify-content: space-between; height: 5.6mm; line-height: 5.6mm; white-space: nowrap; }
+#morning .head .r { width: 34.7mm; display: flex; }
+#morning .head .r .lbl { width: 9.5mm; }
+#morning .head .r .val { flex: 1; text-align: right; }
+#morning .program { position: absolute; left: 2.1mm; right: 0.8mm; top: 21.9mm; }
+.prow { display: flex; height: 6.85mm; line-height: 6.85mm; white-space: nowrap; }
+.prow .val .txt { white-space: nowrap; }
+#morning .prow .val.wide, #afternoon .prow .val.wide, #wednesday .prow .val.wide { width: auto; flex: 1; }
+#morning .prow .lbl { width: 19.4mm; }
+#morning .prow .val { width: 37.7mm; margin-left: 2.7mm; padding-right: 0.5mm; overflow: hidden; }
+#morning .prow .rgt { width: 22.9mm; margin-left: auto; text-align: right; }
+#morning .prow .rgt.dist { text-align: justify; }
+#morning .verse { position: absolute; left: 0; right: 0; top: 153.4mm; text-align: center; line-height: 4.2mm; }
+
+/* 本日の予定 */
+/* 真ん中の列の枠は、どの週も同じ位置・大きさ（2026-10-24 ユーザー判断。ARCHITECTURE.md §5.2）。下から決める：
+   使徒信条の上端を水曜祈祷会の上端（107.23mm）にそろえ、JJS と中高科はお話の題が 2 行のときの大きさ（1 行分ずつ大きく）で固定、
+   残りを本日の予定に回す（行の下に約 9.3mm の余白。原本にあった空欄の仕切りの線は引かない）。枠と枠の間（1.18・1.36・0.76mm）は原本のまま */
+#schedule { left: 98.15mm; top: 10.34mm; width: 50.65mm; height: 49.96mm; }
+#schedule .title { text-align: center; margin-top: 0.9mm; height: 4.6mm; line-height: 4.6mm; }
+#schedule .title > span { overflow: hidden; vertical-align: top; }
+#schedule .title span { text-decoration: underline; text-underline-offset: 0.7mm; text-decoration-thickness: 0.4pt; }
+#schedule .rows { position: absolute; top: 6.2mm; left: 0; right: 0; }
+#schedule .srow { display: flex; height: 4.93mm; line-height: 4.93mm; text-align: center; white-space: nowrap; }
+#schedule .srow .c1 { width: 18.95mm; }
+#schedule .srow .c2 { width: 15.7mm; }
+#schedule .srow .c3 { width: 16.0mm; }
+#schedule .srow.small .c1 { font-size: 9pt; }
+
+
+/* ジョイジョイサンデー / 中高科 */
+#jjs   { left: 98.15mm; top: 61.48mm; width: 50.65mm; height: 24.06mm; }   /* 4 行＋1 行分（原本は 69.11mm・20.16mm） */
+#youth { left: 98.15mm; top: 86.90mm; width: 50.65mm; height: 19.57mm; }   /* 2 行＋1 行分（原本は 90.63mm・15.67mm） */
+.minibox .title { text-align: center; height: 4.3mm; line-height: 4.3mm; margin-top: 0.3mm; }
+.minibox .title span { text-decoration: underline; text-underline-offset: 0.6mm; text-decoration-thickness: 0.4pt; }
+.minibox .rows { position: absolute; left: 2.05mm; right: 1mm; }
+#jjs .rows { top: 6.45mm; } #youth .rows { top: 8.45mm; }   /* 題が 1 行の週は、空く 1 行分（3.9mm）を上下に半分ずつ（原本の位置は 4.5・6.5mm） */
+.minibox .mrow { display: flex; height: 3.9mm; line-height: 3.9mm; white-space: nowrap; }
+.minibox .mrow .lbl { width: 10.5mm; }
+.minibox .mrow .val { margin-left: 3.2mm; flex: 1; overflow: hidden; }
+
+/* 使徒信条 */
+#creed { left: 98.15mm; top: 107.23mm; width: 50.65mm; height: 95.29mm; padding: 0 1.5mm 0 2.05mm; }   /* 上端は水曜祈祷会と同じ、下端は原本と同じ 202.52mm */
+#creed .title { margin-top: 0.8mm; height: 4.6mm; line-height: 4.6mm; letter-spacing: 0.25em; }
+#creed .title span { text-decoration: underline; text-underline-offset: 0.7mm; text-decoration-thickness: 0.4pt; }
+#c-text { margin-top: 0.1mm; line-height: 5.65mm; }   /* 原本と同じ行送り（1 行目の基線 116.7mm・アーメン 201.4mm で原本と同じ）。改行は原本のまま（config の lines） */
+/* 行は原本の改行のまま（config の lines）。最後の行以外は両端揃え（原本と同じく右端がそろう）。行数が決まっているので縦の縮小はしない */
+#creed .body .line { white-space: nowrap; text-align: justify; text-align-last: justify; }
+#creed .body .line.last { text-align-last: auto; }
+#creed .amen { text-align: right; padding-right: 3.5mm; }
+
+/* 午後礼拝 */
+#afternoon { left: 153.2mm; top: 10.0mm; width: 81.22mm; height: 91.81mm; padding: 0 1mm 0 2mm; }
+#afternoon .title { font-family: var(--gothic); font-size: 12pt; margin-top: 1.0mm; height: 5.2mm; line-height: 5.2mm; white-space: nowrap; }
+/* 午後礼拝の見出し（2026-10-11）：3 列の格子。時刻｜「司会・」｜「説教:〜」「奏楽:〜」「案内:〜」。
+   3 列目は左から並べるので、説教・奏楽・案内の頭が縦に揃う。格子全体は枠の右端に寄る（一番長い行の終わり＝右端） */
+#afternoon .head { position: absolute; left: 2.7mm; right: 0.7mm; top: 8.5mm; display: grid; grid-template-columns: 1fr auto auto; grid-auto-rows: 5.7mm; line-height: 5.7mm; white-space: nowrap; }
+#afternoon .head .row { display: contents; }
+#afternoon .head .row[hidden] { display: none !important; }
+#afternoon.with-usher .program { top: 26.4mm; }      /* 案内の 3 行目の分（5.7mm）だけ式順を下げる */
+#afternoon .program { position: absolute; left: 2mm; right: 1mm; top: 20.7mm; }   /* 見出しの最後の行の中心から前奏の行の中心まで 6.3mm（水曜祈祷会と同じ間隔。2026-10-11 に 18.6mm から下げた） */
+#afternoon .prow { height: 5.28mm; line-height: 5.28mm; }
+#afternoon .prow .lbl { width: 16.4mm; }
+#afternoon .prow .val { width: 35.7mm; margin-left: 3.5mm; overflow: hidden; }
+#afternoon .prow .rgt { width: 22.6mm; margin-left: auto; margin-right: 0.3mm; text-align: right; }
+
+/* 水曜祈祷会 */
+#wednesday { left: 153.2mm; top: 107.23mm; width: 81.22mm; height: 91.82mm; padding: 0 1mm 0 2mm; }
+#wednesday .title { font-family: var(--gothic); font-size: 12pt; text-align: center; margin-top: 1.0mm; height: 5.4mm; line-height: 5.4mm; }
+#wednesday .head { position: absolute; left: 2mm; right: 0.7mm; top: 7.2mm; }
+#wednesday .head .row { display: flex; justify-content: space-between; height: 5.9mm; line-height: 5.9mm; white-space: nowrap; }
+#wednesday .program { position: absolute; left: 2mm; right: 1mm; top: 19.0mm; }
+#wednesday .prow { height: 6.7mm; line-height: 6.7mm; }
+#wednesday .prow .lbl { width: 20.7mm; }
+#wednesday .prow .val { width: 33.5mm; margin-left: 3.5mm; overflow: hidden; }
+#wednesday .prow .rgt { width: 21.6mm; margin-left: auto; margin-right: 0.2mm; text-align: right; }
+
+/* 次週奉仕予定 */
+#nextweek { left: 238.66mm; top: 10.0mm; width: 51.99mm; height: 91.81mm; padding: 0 0.8mm 0 1.95mm; }
+#nextweek .title { text-align: center; margin-top: 1.3mm; height: 4.6mm; line-height: 4.6mm; white-space: nowrap; }
+#nextweek .title > span { overflow: hidden; vertical-align: top; }
+#nextweek .title span { text-decoration: underline; text-underline-offset: 0.7mm; text-decoration-thickness: 0.4pt; }
+#n-body { line-height: 3.6mm; }   /* 行送り。どの週も 3.9 → 3.6mm に詰まっていたので初めから 3.6mm（2026-10-24）。足りなければ fit（nextweek_body）で区切りの空き → 行送りの順に詰める */
+#nextweek .sub { font-family: var(--gothic); white-space: nowrap; height: 4.2mm; line-height: 4.2mm; }
+#nextweek .sub span.ul { text-decoration: underline; text-underline-offset: 0.6mm; text-decoration-thickness: 0.4pt; }
+#nextweek .sub small { font-size: 7.4pt; }
+#nextweek .sub.small { font-size: 9pt; }
+#nextweek .nrow { display: flex; min-height: 1lh; line-height: inherit; white-space: nowrap; }   /* 空行も1行分の高さ */
+#nextweek .nrow .lbl { width: 14.4mm; }
+#nextweek .nrow .val { margin-left: 1.9mm; flex: 1; overflow: hidden; }
+#nextweek .gap.g0 { height: 2.25mm; } #nextweek .gap.g1 { height: 3.15mm; } #nextweek .gap.g2 { height: 4.1mm; } #nextweek .gap.g3 { height: 5.05mm; }   /* g2: JJS の上は1行分減らし、g3: 中高科の上は1行空ける */
+#nextweek .sub + .nrow { margin-top: 0.9mm; }
+#nextweek .sub.small + .nrow { margin-top: 0; }
+
+/* 覚えて祈りましょう */
+/* 字間 −0.6pt：原本の Word が見出しと全項目に付けていた「文字間隔 狭く 0.6pt」（w:spacing −12。見本 2024/4〜2026/9 の 14 部すべて同じ）。
+   無いと 1 項目が約 3mm 長くなり、5 番が「…牧／師」と割れて、行が増えた分だけ文字も縮む（2026-10-24） */
+#prayer { left: 238.66mm; top: 107.23mm; width: 51.99mm; height: 91.82mm; padding: 0 0.8mm 0 1.95mm; }
+#prayer .title, #prayer ol li .t { letter-spacing: -0.6pt; }
+#prayer .title { font-size: 12pt; text-align: center; margin-top: 1.0mm; height: 5.4mm; line-height: 5.4mm; }
+#prayer .title span { text-decoration: underline; text-underline-offset: 0.8mm; text-decoration-thickness: 0.4pt; }
+#prayer ol { list-style: none; margin: 0.6mm 0 0; padding: 0; line-height: 4.3mm; }
+#prayer ol li { display: flex; }
+#prayer ol li .n { width: 6.0mm; flex: none; }
+#prayer ol li .t { flex: 1; }
+
+/* ---------- 2ページ目 ---------- */
+#announce { left: 10.5mm; top: 10.0mm; width: 132.04mm; height: 186.87mm; padding: 0 9.0mm 0 1.9mm; }   /* 表（下 36.78mm）まで 1 つの枠。右の余白は原本の 1 行 36 字に合わせて広め */
+#announce .title { font-size: 18pt; text-align: center; letter-spacing: 0.45em; margin-top: 0.4mm; height: 8.6mm; line-height: 8.6mm; }
+#announce .items { margin-top: 0.4mm; line-height: 7.0mm; }
+#announce .foot { z-index: 1; background: #fff; }
+#announce .item { display: flex; }
+#announce .item .n { width: 7.4mm; flex: none; }
+#announce .item .t { flex: 1; white-space: pre-line; }
+#announce .foot { position: absolute; left: 1.9mm; right: 6.5mm; bottom: 36.78mm; }   /* 表の上に載る */
+#announce .foot .contact { height: 11.3mm; line-height: 11.3mm; white-space: nowrap; }
+#announce .foot .lw { height: 5.6mm; line-height: 5.6mm; }
+#announce .foot .note { height: 4.2mm; line-height: 4.2mm; white-space: nowrap; }
+#announce .foot .note small { font-size: 9pt; }
+
+#lastweek { position: absolute; left: 0; top: 150.09mm; width: 100%; z-index: 2;   /* .foot の白地（z-index:1）より上。白地が線の縁に重なると拡大時に線が細く欠けて見える */ border-collapse: separate; border-spacing: 0; box-shadow: inset 0 var(--lw) 0 0 #000; }   /* 外周は #announce の枠。表は上辺と内側の線だけ */
+#lastweek td, #lastweek th { box-shadow: inset calc(-1 * var(--lw)) calc(-1 * var(--lw)) 0 0 #000; height: 5.24mm; padding: 0 0.6mm; text-align: center; font-weight: 400; line-height: 5.0mm; white-space: nowrap; overflow: hidden; }   /* 各セルは右辺と下辺 */
+#lastweek tr > :last-child { box-shadow: inset 0 calc(-1 * var(--lw)) 0 0 #000; }          /* 右端の列は下辺だけ（右辺は枠） */
+#lastweek tr:last-child > * { box-shadow: inset calc(-1 * var(--lw)) 0 0 0 #000; }         /* 最下行は右辺だけ（下辺は枠） */
+#lastweek tr:last-child > :last-child { box-shadow: none; }
+#lastweek col.c1 { width: 34.3mm; } #lastweek col.c2 { width: 27.44mm; } #lastweek col.c3 { width: 10.16mm; }
+#lastweek col.c4 { width: 32.44mm; } #lastweek col.c5 { width: 27.53mm; }
+#lastweek td.amt { text-align: right; padding-right: 2.3mm; }
+
+#cover { left: 153.88mm; top: 10.0mm; width: 135.67mm; height: 180.24mm; }
+#cover .dateline { position: absolute; top: 4.6mm; left: 5.7mm; right: 3.4mm; display: flex; justify-content: space-between; font-size: 11pt; line-height: 5mm; }
+#cover .bt { position: absolute; top: 14.2mm; left: 0; right: 0; text-align: center; font-size: 36pt; line-height: 12.7mm; letter-spacing: 0; -webkit-text-stroke: 0.4pt #000; }   /* 原本の MS 明朝 36pt は太く見えるので少し肉付け */
+#cover .motto1 { position: absolute; top: 31.8mm; left: 0; right: 0; text-align: center; font-size: 12pt; line-height: 5.2mm; }
+#cover .motto2 { position: absolute; top: 37.8mm; left: 0; right: 0; text-align: center; font-size: 10pt; line-height: 4.4mm; }
+#cover .church { position: absolute; left: 30.16mm; top: 53.7mm; width: 72.24mm; height: 72.24mm; }   /* 基準 PDF（週報20260719.pdf）の画像は紙面上 x=184.15mm, y=63.92mm, 72.14mm 角。Chromium は画像を 1px（0.26mm）単位に丸めるので、正方形になる 273px（72.24mm）にし、始点も 1px の格子に乗せる（x=184.15, y=63.76） */
+#cover .sep { position: absolute; left: 0; right: 0; top: 125.36mm; height: 1mm; box-shadow: inset 0 var(--lw) 0 0 #000; }
+#cover .logo { position: absolute; left: 24.3mm; top: 126.0mm; width: 87.0mm; }
+#cover .addr { position: absolute; left: 0; right: 0; top: 145.3mm; text-align: center; line-height: 4.55mm; }
+#cover .addr .ul { text-decoration: underline; text-underline-offset: 0.5mm; text-decoration-thickness: 0.4pt; }   /* URL・mail もほかの行と同じく中央寄せ（原本の左寄りは誤り。2026-10-12 に直した） */
+
+/* 2 行の題（題の改行位置。ARCHITECTURE.md §5.2）：9pt、2 行目の頭を「の内側にそろえる。横に入らなければ 2 行とも同じ倍率で縮める（fit: title_2line） */
+.val.two { font-size: 9pt; }
+.val.two > .txt { display: inline-block; vertical-align: top; white-space: nowrap; }
+.val.two .l1, .val.two .l2 { display: block; }
+.val.two .ind { visibility: hidden; }
+/* 式順：説教の行を 2 行分の高さ（行送り 3.5mm × 2）にし、項目名・名前は 2 行の真ん中。下の行は下がる */
+#morning .prow.two, #afternoon .prow.two, #wednesday .prow.two { height: 7mm; line-height: 7mm; }
+.prow .val.two { line-height: 3.5mm; }
+/* 次週・本日の JJS：2 行目は次の行（行送りはその欄のまま）。項目名は 1 行目。本日の JJS・中高科は空いていた 1 行分を使い、行は上から */
+.minibox .mrow.two { height: 7.8mm; }
+#jjs.two .rows { top: 4.5mm; } #youth.two .rows { top: 6.5mm; }
+
+/* 溢れの可視化（fit で収まらなかった要素） */
+.overflow-mark { outline: 0.6mm solid #d00 !important; outline-offset: -0.6mm; }
+
+/* 休会（ARCHITECTURE.md §16.3）：午後礼拝・水曜祈祷会の前奏の行の内容の欄に、項目名から 2 字分離して「休　会」。見本 C を採用（2026-10-11） */
+#afternoon .prow .val.kyukai .txt, #wednesday .prow .val.kyukai .txt { padding-left: 2em; letter-spacing: 1em; }

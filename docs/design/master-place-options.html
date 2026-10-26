@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>マスタの置き場所の案</title>
+<style>
+/* 入力画面（src/admin/admin.css）と同じ色 */
+:root { --ink:#1d2330; --muted:#5a6375; --rule:#d9dde5; --panel:#fff; --bg:#f4f5f8; --accent:#2b4c7e; --warn:#b3261e; --ok:#2e7d4f; --carry:#f3ecdc; --carry-ink:#6b4f12; --auto:#e3f1ea; --auto-ink:#1f5c3a; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font-family: "BIZ UDPGothic", "Yu Gothic", "Hiragino Sans", sans-serif; font-size: 14px; color: var(--ink); background: #e8eaef; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2 { font-size: 17px; margin: 36px 0 4px; color: var(--accent); }
+h3 { font-size: 15px; margin: 18px 0 4px; }
+p.lead, ul.lead { margin: 0 0 8px; color: var(--muted); max-width: 980px; line-height: 1.6; }
+.frame { background: var(--bg); border: 1px solid #c3c8d2; margin: 10px 0 4px; overflow: hidden; }
+.frame.w1024 { width: 1024px; } .frame.w768 { width: 768px; }
+.caption { font-size: 12px; color: var(--muted); margin: 2px 0 10px; }
+button { font: inherit; padding: 6px 14px; border: 1px solid var(--rule); background: #fff; border-radius: 4px; color: var(--ink); white-space: nowrap; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+button.small { padding: 1px 8px; font-size: 12px; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+/* ===== 今の入力画面の部品（ヘッダ案 A） ===== */
+.top { display: flex; align-items: center; gap: 14px; height: 56px; padding: 0 16px; background: var(--panel); border-bottom: 1px solid var(--rule); white-space: nowrap; }
+.top .brand { font-size: 13px; color: var(--muted); }
+.top .week { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 12px; border: 1px solid var(--rule); border-radius: 6px; background: #fff; }
+.top .week .d { font-size: 18px; font-weight: 700; letter-spacing: .02em; }
+.top .week .no { font-size: 12px; color: var(--muted); }
+.top .week .caret { color: var(--muted); font-size: 12px; }
+.top .sp { flex: 1; }
+.top .state { font-size: 13px; color: #8a5a00; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.top .state .dot { background: #e0a100; }
+.top .more { font-size: 18px; line-height: 1; padding: 2px 10px 8px; border-color: transparent; background: transparent; color: var(--muted); }
+.top .save { font-weight: 700; padding: 7px 20px; }
+.top .common { font-size: 13px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.top .common b { color: #4a3a7a; font-weight: 700; }
+.body { padding: 0 16px 14px; }
+.tabs { display: flex; gap: 4px; padding: 10px 0 0; }
+.tabs span { padding: 6px 14px; background: #e6e8ee; border-radius: 6px 6px 0 0; font-size: 14px; }
+.tabs span.on { background: #fff; color: var(--accent); font-weight: 700; }
+.tabs .r { margin-left: auto; }
+.legend { font-size: 12px; color: var(--muted); padding: 6px 2px; }
+.legend .carry { background: var(--carry); color: var(--carry-ink); font-size: 10px; padding: 0 4px; border-radius: 2px; }
+.legend .auto { background: var(--auto); color: var(--auto-ink); font-size: 10px; padding: 0 4px; border-radius: 2px; }
+.panel { background: var(--panel); border: 1px solid var(--rule); padding: 12px; }
+.fake-paper { height: 70px; border: 1px solid #333; display: flex; align-items: center; justify-content: center; color: var(--muted); font-size: 12px; }
+/* マスタの中身（今のマスタタブの中身をそのまま移す） */
+.mh { font-size: 15px; font-weight: 700; color: var(--accent); border-bottom: 1px solid var(--rule); padding-bottom: 4px; margin: 4px 0 10px; }
+.mh small { font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 8px; }
+.mf-bar { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 8px; }
+.mf-bar .on { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+.mf-bar .sp { flex: 1; }
+table.mf { border-collapse: collapse; width: 100%; font-size: 13px; border: 1px solid var(--rule); }
+table.mf th { background: #f7f8fa; color: var(--muted); font-weight: 400; text-align: left; }
+table.mf th, table.mf td { border-bottom: 1px solid var(--rule); padding: 3px 8px; }
+table.mf td.no, table.mf th.no { width: 4.5em; text-align: right; }
+.badge { font-size: 11.5px; padding: 0 6px; border-radius: 3px; background: #fff4e5; color: #8a5a00; border: 1px solid #f0c98a; }
+.more-sec { margin-top: 12px; font-size: 13px; color: var(--muted); }
+.more-sec b { color: var(--accent); }
+
+/* ===== 案 A：見出しの切り替え ===== */
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; flex: none; }
+.seg > span { padding: 6px 14px; font-size: 14px; color: var(--muted); background: #fff; position: relative; }
+.seg > span + span { border-left: 1px solid var(--rule); }
+.seg > span.on { background: var(--accent); color: #fff; font-weight: 700; }
+.seg .pend { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e0a100; margin-left: 5px; vertical-align: 2px; }
+
+/* ===== 案 B：設定の画面のように入って戻る ===== */
+.top .vsep { width: 1px; height: 26px; background: var(--rule); }
+.top .goto { font-size: 14px; color: var(--accent); }
+.top .back { font-size: 14px; color: var(--accent); border-color: transparent; background: transparent; padding-left: 4px; }
+.top .back .pend { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #e0a100; margin-left: 5px; vertical-align: 2px; }
+.top .title { font-size: 18px; font-weight: 700; }
+
+/* ===== 案 C：2 段の見出し ===== */
+.band { display: flex; align-items: center; gap: 18px; height: 38px; padding: 0 16px; background: var(--accent); color: #fff; white-space: nowrap; }
+.band .brand { font-size: 13px; opacity: .8; }
+.band .nav { display: flex; height: 100%; }
+.band .nav > span { display: flex; align-items: center; padding: 0 14px; font-size: 14px; opacity: .75; border-bottom: 3px solid transparent; }
+.band .nav > span.on { opacity: 1; font-weight: 700; border-bottom-color: #fff; }
+.band .nav .pend { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: #f5c042; margin-left: 5px; }
+.band .sp { flex: 1; }
+.band .more { color: #fff; font-size: 18px; line-height: 1; padding: 0 6px 8px; }
+.c2 { height: 52px; }
+.c2.note { background: #f6f3fc; }
+
+/* 狭い幅（768px） */
+.w768 .top .brand, .w768 .top .week .no, .w768 .band .brand { display: none; }
+.w768 .top { gap: 10px; padding: 0 10px; }
+.w768 .top .week .y { display: none; }   /* 案 A: 768px では年を省いて「10月25日（日）」 */
+
+.pick { background: #fff; border: 2px solid var(--accent); border-radius: 6px; padding: 14px 18px; margin: 28px 0 0; max-width: 1024px; line-height: 1.7; }
+.pick h2 { margin-top: 0; }
+table.cmp { border-collapse: collapse; margin: 10px 0; font-size: 13px; background: #fff; }
+table.cmp th, table.cmp td { border: 1px solid var(--rule); padding: 6px 10px; text-align: left; vertical-align: top; }
+table.cmp th { background: #f0f2f6; }
+</style>
+</head>
+<body>
+<h1>マスタの置き場所 — 3 つの案</h1>
+<p class="lead">2026-10-24。今の「マスタ」タブは、週の選択（ヘッダ）の下に、週の欄と同じ並びで置かれている。そのため「選んだ週の中のマスタ」に見えるが、実際の操作は週データ（<code>weeks/&lt;日付&gt;.json</code>）に書かず、どの週にも共通の台帳（D1 の <code>masters/</code>・KV の pptx）をその場で書き換える。<br>
+決めたこと（10/24、ユーザーと合意）: <b>マスタを週の欄から外し、見出し（ヘッダ）の高さで「週報」と並べる。</b>別ページにはしない（週の入力中に「曲名が未登録」→ 登録 → 戻る、の行き来で、未保存の入力を残したまま題がその場で入るように）。</p>
+<ul class="lead">
+<li>3 案とも共通: マスタを開いている間は、週の選択・保存の状態・保存・サイトに反映を出さない。代わりに「どの週にも共通。変更は確かめた後すぐに反映され、保存は要らない」と出す。</li>
+<li>週の欄に「マスタ」タブは無くなる（主日礼拝／午後・水曜・次週／報告・表紙／スライド／（同期）／プレビュー）。</li>
+<li>マスタの中身は今のマスタタブのまま（讃頌歌・交読文／名簿／控えを取る／ファイルの差し替え）。開発者向けの「システム」欄（PDF エンジンの版・今日の生成回数）はマスタではないので「…」の中へ。</li>
+<li>同じ週が別のタブで編集中のときの覆い（待機画面）は週報の側だけに掛ける。マスタは待たずに使える。</li>
+<li>担当者ページ（スライド担当）も同じ形にそろえる（同じ部品 <code>src/ui/masters.mjs</code> を使っているため）。</li>
+</ul>
+<p class="lead">状態の例は「週報に未保存の変更があるまま、マスタを開いた」。各案を 1024px（iPad 横・小さめの PC）と 768px（iPad 縦）で示す。</p>
+
+<!-- ============ 案 A ============ -->
+<h2>案 A　見出しの左端で切り替える</h2>
+<p class="lead">今の「週報 入力」の文字の位置に「週報｜マスタ」の切り替えを置く。2 つは対等で、どちらも 1 回押せば移れる。マスタにいる間は、週報に未保存の変更が残っていることを「週報」の横の点で知らせる。</p>
+<div class="frame w1024">
+  <div class="top">
+    <span class="seg"><span class="on">週報</span><span>マスタ</span></span>
+    <span class="week"><span class="d"><span class="y">2026年</span>10月25日（日）</span><span class="no">第43号</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+    <button class="more">…</button>
+  </div>
+  <div class="body">
+    <div class="tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>スライド</span><span class="r">プレビュー</span></div>
+    <div class="legend"><span class="carry">引き継ぎ</span> 前週の値が入っている欄　<span class="auto">自動</span> 日付などから決まる欄（編集不可）</div>
+    <div class="panel"><div class="fake-paper">紙面と同じ配置の入力欄</div></div>
+  </div>
+</div>
+<div class="caption">1024px・週報（週の欄から「マスタ」タブが無くなる）</div>
+<div class="frame w1024">
+  <div class="top">
+    <span class="seg"><span>週報<span class="pend" title="週報に未保存の変更があります"></span></span><span class="on">マスタ</span></span>
+    <span class="common"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます（「保存」は要りません）</span>
+    <span class="sp"></span>
+    <button class="more">…</button>
+  </div>
+  <div class="body" style="padding-top:12px">
+    <div class="panel">
+      <div class="mh">讃頌歌・交読文<small>番号と題（マスタ）と、スライドの素材（pptx）</small></div>
+      <div class="mf-bar"><button class="on">讃頌歌 260 ⚠1</button><button>交読文 65 ⚠1</button><span class="sp"></span>表示 <button class="small on">すべて</button><button class="small">pptx 未登録 1</button><button class="small">マスタ未登録 0</button></div>
+      <table class="mf"><tr><th class="no">番号</th><th>曲名</th><th>pptx</th></tr>
+        <tr><td class="no">6</td><td>父、み子、み霊の</td><td><span class="badge">pptx 未登録</span></td></tr>
+        <tr><td class="no">9</td><td>聖なる、聖なる、聖なるかな</td><td>9 枚・16:9</td></tr>
+        <tr><td class="no">11</td><td>主のみ稜威とみさかえとを</td><td>5 枚・16:9</td></tr></table>
+      <div class="more-sec">（この下に今と同じく <b>名簿</b>（閲覧のみ）・<b>控えを取る</b>・<b>ファイルの差し替え</b>）</div>
+    </div>
+  </div>
+</div>
+<div class="caption">1024px・マスタ（週の選択・保存は出ない。「週報」の横の点＝週報に未保存の変更が残っている）</div>
+<div class="frame w768">
+  <div class="top">
+    <span class="seg"><span class="on">週報</span><span>マスタ</span></span>
+    <span class="week"><span class="d"><span class="y">2026年</span>10月25日（日）</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+    <button class="more">…</button>
+  </div>
+</div>
+<div class="caption">768px・週報（日付は年を省く。号数は今も 860px 未満では出していない）</div>
+<div class="frame w768">
+  <div class="top">
+    <span class="seg"><span class="on">週報</span><span>マスタ</span></span>
+    <span class="week"><span class="d"><span class="y">2026年</span>10月25日（日）</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state" style="color:var(--muted)"><span class="dot" style="background:var(--ok)"></span>保存済み 10/25 06:26</span>
+    <button class="publish" style="font-size:13px;color:var(--accent);background:none;border:none;padding:0;text-decoration:underline;text-underline-offset:3px">サイトに反映…</button>
+    <button class="primary save">保存</button>
+    <button class="more">…</button>
+  </div>
+</div>
+<div class="caption">768px・週報・保存済み（一番込み合うとき。収まらなければ保存の状態の文が「…」で切れる）</div>
+<div class="frame w768">
+  <div class="top">
+    <span class="seg"><span>週報<span class="pend"></span></span><span class="on">マスタ</span></span>
+    <span class="common"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます（「保存」は要りません）</span>
+    <span class="sp"></span>
+    <button class="more">…</button>
+  </div>
+</div>
+<div class="caption">768px・マスタ</div>
+
+<!-- ============ 案 B ============ -->
+<h2>案 B　設定の画面のように「入って戻る」</h2>
+<p class="lead">週報の見出しの右端（「…」の左）に「マスタ ›」を置き、押すとマスタの画面になる。マスタの画面の見出しは「‹ 週報に戻る」と題「マスタ」。スマートフォンの「設定」と同じ形で、別の場所にいることは一番強く伝わる。</p>
+<div class="frame w1024">
+  <div class="top">
+    <span class="brand">週報 入力</span>
+    <span class="week"><span class="d">2026年10月25日（日）</span><span class="no">第43号</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+    <span class="vsep"></span>
+    <button class="goto">マスタ ›</button>
+    <button class="more">…</button>
+  </div>
+  <div class="body">
+    <div class="tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>スライド</span><span class="r">プレビュー</span></div>
+    <div class="panel"><div class="fake-paper">紙面と同じ配置の入力欄</div></div>
+  </div>
+</div>
+<div class="caption">1024px・週報</div>
+<div class="frame w1024">
+  <div class="top">
+    <button class="back">‹ 週報に戻る<span class="pend"></span></button>
+    <span class="vsep"></span>
+    <span class="title">マスタ</span>
+    <span class="common"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます（「保存」は要りません）</span>
+    <span class="sp"></span>
+    <button class="more">…</button>
+  </div>
+  <div class="body" style="padding-top:12px">
+    <div class="panel">
+      <div class="mh">讃頌歌・交読文<small>番号と題（マスタ）と、スライドの素材（pptx）</small></div>
+      <div class="more-sec">（中身は案 A と同じ）</div>
+    </div>
+  </div>
+</div>
+<div class="caption">1024px・マスタ</div>
+<div class="frame w768">
+  <div class="top">
+    <span class="week"><span class="d">2026年10月25日（日）</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+    <button class="goto">マスタ ›</button>
+    <button class="more">…</button>
+  </div>
+</div>
+<div class="caption">768px・週報（「保存」の右に別の行き先が並ぶ）</div>
+<div class="frame w768">
+  <div class="top">
+    <button class="back">‹ 週報に戻る<span class="pend"></span></button>
+    <span class="title">マスタ</span>
+    <span class="common"><b>どの週にも共通</b>。変更はすぐに反映（保存は不要）</span>
+    <span class="sp"></span>
+    <button class="more">…</button>
+  </div>
+</div>
+<div class="caption">768px・マスタ</div>
+
+<!-- ============ 案 C ============ -->
+<h2>案 C　見出しを 2 段にする（場所の帯＋週の帯）</h2>
+<p class="lead">上の帯に「週報｜マスタ」を置き、その下の帯に週の選択・保存を置く。「場所 → 週 → 欄」の上下関係が形のとおりになる。マスタでは下の帯が説明の帯になる。高さは約 90px（今は 56px）。</p>
+<div class="frame w1024">
+  <div class="band"><span class="brand">週報 入力</span><span class="nav"><span class="on">週報</span><span>マスタ</span></span><span class="sp"></span><span class="more">…</span></div>
+  <div class="top c2">
+    <span class="week"><span class="d">2026年10月25日（日）</span><span class="no">第43号</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+  </div>
+  <div class="body">
+    <div class="tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>スライド</span><span class="r">プレビュー</span></div>
+    <div class="panel"><div class="fake-paper">紙面と同じ配置の入力欄</div></div>
+  </div>
+</div>
+<div class="caption">1024px・週報</div>
+<div class="frame w1024">
+  <div class="band"><span class="brand">週報 入力</span><span class="nav"><span>週報<span class="pend"></span></span><span class="on">マスタ</span></span><span class="sp"></span><span class="more">…</span></div>
+  <div class="top c2 note">
+    <span class="common"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます（「保存」は要りません）</span>
+  </div>
+  <div class="body" style="padding-top:12px">
+    <div class="panel">
+      <div class="mh">讃頌歌・交読文<small>番号と題（マスタ）と、スライドの素材（pptx）</small></div>
+      <div class="more-sec">（中身は案 A と同じ）</div>
+    </div>
+  </div>
+</div>
+<div class="caption">1024px・マスタ</div>
+<div class="frame w768">
+  <div class="band"><span class="nav"><span class="on">週報</span><span>マスタ</span></span><span class="sp"></span><span class="more">…</span></div>
+  <div class="top c2">
+    <span class="week"><span class="d">2026年10月25日（日）</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary save">保存</button>
+  </div>
+</div>
+<div class="caption">768px・週報（幅には余裕があるが、入力欄に使える高さが約 35px 減る）</div>
+
+<div class="pick">
+<h2>選んだ案：A（見出しの左端で切り替える）</h2>
+<table class="cmp">
+<tr><th></th><th>A 見出しの切り替え</th><th>B 入って戻る</th><th>C 2 段の見出し</th></tr>
+<tr><th>いまどこにいるかが分かる</th><td>◎ 切り替えの色が常に見える</td><td>○ 見出しの形が変わる</td><td>◎ 上の帯</td></tr>
+<tr><th>週報とマスタの行き来</th><td>◎ 同じ場所を 1 回押す</td><td>△ 行きは右端、帰りは左端</td><td>◎ 同じ場所を 1 回押す</td></tr>
+<tr><th>「マスタは週の中」と読めない</th><td>◎ 週の選択より上（左）に並ぶ</td><td>◎</td><td>◎</td></tr>
+<tr><th>担当者ページ（マスタが主な仕事の一つ）</th><td>◎ スライドとマスタが対等</td><td>△ マスタが「奥の画面」に見える</td><td>◎</td></tr>
+<tr><th>見出しの高さ（10/11 の決定: 1 段・高さ固定）</th><td>◎ 今と同じ 56px</td><td>◎ 56px</td><td>× 約 90px。入力欄が狭くなる</td></tr>
+<tr><th>768px で 1 段に収まる</th><td>○ 日付の年を省けば収まる</td><td>○ 「保存」の横に別の行き先が並ぶ</td><td>◎</td></tr>
+<tr><th>作り直す量</th><td>小</td><td>小</td><td>中（ヘッダの作り直し）</td></tr>
+</table>
+<p>理由: 牧師にとってマスタは「週の入力中にときどき行って、すぐ戻る」場所で、担当者にとってはスライドと並ぶ主な仕事。どちらにも合うのは、2 つが対等に並び、同じ場所を押せば行き来できる A。
+A は「週報｜マスタ」が週の選択より左（＝上の階層）にあるので、マスタが週の中にあるとは読めない。見出しは 1 段・56px のままで、10/11 に決めたヘッダ（週が主役）の形も崩さない。
+B は別の場所にいることが一番はっきりするが、行きと帰りのボタンの位置が違い、768px では「保存」の隣に別の行き先が並ぶ。C は上下関係が最も正確だが、毎週使う入力欄の高さを削ってまで得るものが少ない。</p>
+
+<h3>A の細かいところ</h3>
+<ul>
+<li>マスタを開いている間は、週の選択・保存の状態・「保存」・「サイトに反映…」を出さない。代わりに「どの週にも共通。変更は確かめた後すぐに反映されます（「保存」は要りません）」。</li>
+<li>週報に未保存の変更があるときは、マスタの間も「週報」の横に黄色の点（保存の状態の点と同じ色）。週報に戻ると、入力はそのまま残っている。</li>
+<li>どちらを開いているかは URL の末尾（<code>#masters</code>）にも出す。読み込み直しても同じ側が開き、ブラウザの「戻る」で週報に戻れる。</li>
+<li>週の欄の「曲名が未登録（『マスタ』タブで登録）」は「曲名が未登録 — マスタで登録」のリンクにし、押すとマスタの「新規」に番号が入った状態で開く。</li>
+<li>768px では日付の年を省く（「10月25日（日）」）。週の一覧の中は今どおり年つき。</li>
+<li>担当者ページ: 見出しを「（スライド担当）［週報｜マスタ］ 週［選択］ … ログイン中」にし、マスタを開いている間は週の選択を出さない。週報の側のタブは「スライド」「週報（PDF）」。</li>
+<li>「…」の中: フォント（評価用）／サイトに出ている週／<b>PDF エンジンの版・今日の生成回数（今の「システム」欄）</b>／ログイン中のアカウントとログアウト。</li>
+</ul>
+</div>
+</body>
+</html>

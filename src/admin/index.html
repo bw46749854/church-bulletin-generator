@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>週報 入力</title>
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+<header class="top">
+  <!-- 週報｜マスタ（ui/place.mjs。docs/design/master-place-options.html 案 A）。マスタは週データに書かない（どの週にも共通）ので、週の欄には置かない -->
+  <span class="place" role="group" aria-label="開く場所"><button type="button" data-place="week">週報<span id="week-pend" class="pend for-masters" title="週報に保存していない変更があります" hidden></span></button><button type="button" data-place="masters">マスタ</button></span>
+  <!-- いま開いている週（押すと週の操作の一覧） -->
+  <div class="pop for-week">
+    <button type="button" id="btn-week" class="week" aria-haspopup="true" aria-expanded="false" title="週を開く・新しい週を作る"><span id="wk-date" class="d">読み込んでいます…</span><span id="wk-no" class="no"></span><span class="caret">▼</span></button>
+    <div id="week-menu" class="menu" hidden>
+      <div class="menu-h">保存済みの週</div>
+      <div id="week-list" class="week-list"></div>
+      <div class="menu-sep"></div>
+      <button type="button" class="menu-item strong" id="btn-new-open">新しい週を作る…</button>
+      <div class="menu-sep"></div>
+      <button type="button" class="menu-item" id="btn-date-change">この週の日付を変更…</button>
+      <button type="button" class="menu-item" id="btn-import" title="保存しておいた控え（JSON）を読み込んで、その内容から始める">JSON を読み込む…</button><input type="file" id="file-import" accept=".json,application/json" hidden>
+      <div class="menu-sep"></div>
+      <button type="button" class="menu-item" id="btn-export-pdf" title="この週の保存済みの PDF をダウンロードする（画面の未保存の変更は入らない）">この週の PDF を保存</button>
+      <button type="button" class="menu-item" id="btn-export-json" title="この週の保存済みの内容を控え（JSON）としてダウンロードする。「JSON を読み込む…」で戻せる">この週の控え（JSON）を保存</button>
+    </div>
+  </div>
+  <span class="common for-masters"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます（「保存」は要りません）</span>
+  <span class="spacer"></span>
+  <span id="save-state" class="state for-week"></span>
+  <button type="button" id="btn-publish" class="publish for-week" title="保存済みの週の日付・司会・説教・聖書箇所・説教題をサイトのトップページに反映（サイトを再ビルド）">サイトに反映…</button>
+  <button type="button" id="btn-save" class="primary for-week">保存</button>
+  <!-- その他 -->
+  <div class="pop">
+    <button type="button" id="btn-more" class="more" aria-haspopup="true" aria-expanded="false" title="その他">…</button>
+    <div id="more-menu" class="menu right" hidden>
+      <label class="menu-row">フォント（評価用）
+        <select id="font-select"><option value="ipa">IPA P明朝</option><option value="ipaex">IPAex明朝（等幅）</option><option value="biz">BIZ UD明朝</option></select>
+      </label>
+      <div class="menu-sep"></div>
+      <div class="menu-note" id="publish-note">サイトに出ている週: —</div>
+      <div class="menu-sep"></div>
+      <div class="menu-h">システム（開発・保守のための情報）</div>
+      <div class="menu-note sys"><div id="engine-note"></div><div id="pdf-engine"></div><div id="pdf-stats"></div></div>
+      <div id="who" hidden><div class="menu-sep"></div><div class="menu-note">ログイン中: <span id="who-email"></span></div><button type="button" class="menu-item" id="btn-logout">ログアウト</button></div>
+    </div>
+  </div>
+</header>
+
+<!-- 閉じるまで残る知らせ（保存を受け付けなかった、など） -->
+<div id="notices" class="notices" aria-live="assertive"></div>
+<!-- 保存の進み具合（どのタブにいても見える） -->
+<div id="save-progress" class="progress strip" role="status" aria-live="polite" hidden>
+  <div class="pg-text"></div><div class="pg-bar"><i></i></div><div class="pg-note"></div>
+</div>
+
+<div id="login" class="blocked" hidden>
+  <div class="blocked-box">
+    <h2>週報 入力 — ログイン</h2>
+    <p>許可された Google アカウントでログインしてください。</p>
+    <div id="google-btn"></div>
+    <p id="login-msg" class="warn"></p>
+  </div>
+</div>
+
+<main class="layout">
+  <form id="form" class="form for-week" autocomplete="off">
+    <nav class="tabs">
+      <button type="button" class="tab active" data-tab="t1">主日礼拝</button>
+      <button type="button" class="tab" data-tab="t2">午後・水曜・次週</button>
+      <button type="button" class="tab" data-tab="t3">報告・表紙</button>
+      <button type="button" class="tab" data-tab="t6">スライド</button>
+      <button type="button" class="tab" data-tab="t7" id="tab-sync" hidden>同期</button>
+      <button type="button" class="tab preview-tab" data-tab="t5" id="tab-preview">プレビュー<span id="eng-progress" class="progress mini" hidden><span class="pg-bar"><i></i></span><span class="pg-text"></span><span class="pg-note" hidden></span></span></button>
+    </nav>
+    <div class="legend"><span class="carry">引き継ぎ</span> 前週の値が入っている欄　<span class="auto-badge">自動</span> 日付などから決まる欄（編集不可）</div>
+
+    <!-- ===== タブ1：1ページ目の左半分 ===== -->
+    <section class="panel active" id="t1">
+      <div class="paper">
+        <div class="pbox" id="box-morning">
+          <div class="ptitle"><input name="service_name" class="inline title" required data-soft="12"><span class="carry">引き継ぎ</span></div>
+          <div class="phead">
+            <div class="phead-l">
+              <div><span class="ro" id="date-view"></span><span class="auto-badge" id="auto-no"></span></div>
+              <div id="auto-time" class="ro"></div>
+              <div>奏楽：<span data-person="morning.organist" data-filter="flag:organist"></span></div>
+            </div>
+            <div class="phead-r">
+              <div><span class="lbl dist">司会</span><span data-person="morning.presider" data-filter="title:長老" data-required="1"></span></div>
+              <div><span class="lbl dist">説教</span><span data-person="morning.preacher" data-filter="flag:pastor" data-required="1"></span><span class="carry">引き継ぎ</span></div>
+            </div>
+          </div>
+          <div class="program" id="m-program"></div>
+          <div class="verse">
+            <div class="ro-title">聖句 <span class="master-badge">据え置き</span> 年間の固定文。全週に効く。ふだんは編集できません <button type="button" class="small" data-edit="verse">編集</button></div>
+            <fieldset class="rare lock" id="edit-verse" disabled>
+              <textarea id="text-cover" rows="6" class="center" placeholder="1行1段で入力"></textarea>
+              <p><button type="button" class="small" data-save="verse">保存</button> <button type="button" class="small" data-cancel="verse">取消</button> <span class="hint">保存するとすぐに全週の紙面に効きます（週の保存とは別）</span></p>
+            </fieldset>
+          </div>
+        </div>
+
+        <div class="pcol">
+          <div class="pbox" id="box-schedule">
+            <div class="ptitle small"><span id="sch-title">本日の予定</span></div>
+            <table class="ptable" id="sch-rows"></table>
+          </div>
+          <div class="pbox" id="box-jjs">
+            <div class="ptitle small">ジョイジョイサンデー</div>
+            <div class="mrow"><span class="lbl dist">司会</span><span data-person="sunday_school.presider" data-filter="flag:cs_teacher" data-notitle="1"></span></div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span data-ref="sunday_school.scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">お話</span><input name="sunday_school.title" class="inline" data-lines="2" placeholder="題"></div>
+            <div class="mrow"><span class="lbl"></span><span data-person="sunday_school.speaker" data-filter="flag:cs_teacher" data-notitle="1"></span></div>
+            <div class="note" id="jjs-note"></div>
+          </div>
+          <div class="pbox" id="box-youth">
+            <div class="ptitle small">中高科（休会）</div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span class="ro" id="youth-scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">お話し</span><span class="ro" id="youth-title" style="white-space: pre-line"></span></div>
+            <div class="note">ジョイジョイサンデーと同じ内容が入ります</div>
+          </div>
+          <div class="pbox ro" id="box-creed">
+            <div class="ptitle small">使 徒 信 条</div>
+            <div class="note">固定文（config.json）</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== タブ2：1ページ目の右半分 ===== -->
+    <section class="panel" id="t2">
+      <div class="paper">
+        <div class="pcol wide">
+          <div class="pbox" id="box-afternoon">
+            <div class="ptitle left"><span id="af-title">午後礼拝</span> <label class="susp"><input type="checkbox" data-susp="afternoon"> 休止</label><span class="auto-badge susp-auto" data-susp-auto="afternoon" hidden>自動</span></div>
+            <div class="nextdate" id="af-nextdate" hidden>次回の日付 <span class="ro" id="af-next-view"></span> <span class="auto-badge" id="af-next-auto">自動</span>
+              <button type="button" class="small" id="af-next-edit">編集</button>
+              <span id="af-next-editor" hidden><input type="date" id="af-next-date"> <button type="button" class="small" id="af-next-reset">自動に戻す</button></span>
+              <span class="hint">臨時の休会で次回がずれるときだけ直す（この週だけ）</span></div>
+            <div class="phead">
+              <div class="phead-l"><div class="ro">午後1:30</div></div>
+              <div class="phead-r stack">
+                <div>司会・説教：<span data-person="afternoon.presider_preacher" data-filter="flag:pastor"></span><span class="carry">引き継ぎ</span></div>
+                <div>奏楽：<span data-person="afternoon.organist" data-filter="flag:organist"></span> <button type="button" class="small" id="btn-usher-add">案内を追加</button></div>
+                <div id="usher-row" hidden>案内：<span data-person="afternoon.usher"></span> <button type="button" class="small" id="btn-usher-remove">外す</button></div>
+              </div>
+            </div>
+            <div class="program" id="a-program"></div>
+            <div class="note" id="af-note"></div>
+          </div>
+          <div class="pbox" id="box-wednesday">
+            <div class="ptitle">水曜祈祷会 <label class="susp"><input type="checkbox" data-susp="wednesday"> 休止</label><span class="auto-badge susp-auto" data-susp-auto="wednesday" hidden>自動</span></div>
+            <div class="phead">
+              <div class="phead-l"><div class="ro" id="wed-date"></div><div class="ro">午後7時</div></div>
+              <div class="phead-r stack">
+                <div>司会・説教：<span data-person="wednesday.presider_preacher" data-filter="flag:pastor"></span><span class="carry">引き継ぎ</span></div>
+                <div>奏楽：<span data-person="wednesday.organist" data-filter="flag:organist"></span><span class="carry">引き継ぎ</span></div>
+              </div>
+            </div>
+            <div class="program" id="w-program"></div>
+          </div>
+        </div>
+        <div class="pcol">
+          <div class="pbox" id="box-next">
+            <div class="ptitle small" id="nx-title">次週奉仕予定</div>
+            <div class="sub"><span class="t">主日礼拝<small>（ライブ配信も）</small></span></div>
+            <div class="mrow"><span class="lbl dist">司会</span><span data-person="next_week.morning.presider" data-filter="title:長老"></span></div>
+            <div class="mrow"><span class="lbl dist">祈祷</span><span data-person="next_week.morning.prayer" data-filter="title:長老"></span></div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span data-ref="next_week.morning.scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">説教</span><input name="next_week.morning.sermon_title" class="inline" data-lines="2" maxlength="40" placeholder="説教題"></div>
+            <div class="mrow"><span class="lbl"></span><span data-person="next_week.morning.preacher" data-filter="flag:pastor"></span></div>
+            <div class="nxgroup" id="nx-af">
+            <div class="sub"><span class="t">午後礼拝</span> <label class="susp"><input type="checkbox" data-susp="nx_af"> 休止</label><span class="auto-badge susp-auto" data-susp-auto="nx_af" hidden>自動</span> <span class="note" id="nx-af-note"></span></div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span data-ref="next_week.afternoon.scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">説教</span><input name="next_week.afternoon.sermon_title" class="inline" data-lines="2" maxlength="40" placeholder="説教題"></div>
+            <div class="mrow"><span class="lbl"></span><span data-person="next_week.afternoon.preacher" data-filter="flag:pastor"></span></div>
+            </div>
+            <div class="nxgroup" id="nx-ss">
+            <div class="sub"><span class="t">ジョイジョイサンデー（小学科）</span> <label class="susp"><input type="checkbox" data-susp="nx_ss"> 休止</label><span class="auto-badge susp-auto" data-susp-auto="nx_ss" hidden>自動</span> <span class="note" id="nx-ss-note"></span></div>
+            <div class="mrow"><span class="lbl dist">司会</span><span data-person="next_week.sunday_school.presider" data-filter="flag:cs_teacher" data-notitle="1"></span></div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span data-ref="next_week.sunday_school.scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">お話し</span><input name="next_week.sunday_school.title" class="inline" data-lines="2" placeholder="題"></div>
+            <div class="mrow"><span class="lbl"></span><span data-person="next_week.sunday_school.speaker" data-filter="flag:cs_teacher" data-notitle="1"></span></div>
+            </div>
+            <div class="nxgroup" id="nx-youth">
+            <div class="sub"><span class="t">中高科</span> <label class="susp"><input type="checkbox" data-susp="nx_youth"> 休止</label><span class="auto-badge susp-auto" data-susp-auto="nx_youth" hidden>自動</span> <span class="note">当分は休会。再開したらチェックを外して入力</span></div>
+            <div class="mrow"><span class="lbl dist">聖書</span><span data-ref="next_week.youth.scripture"></span></div>
+            <div class="mrow"><span class="lbl dist">お話し</span><input name="next_week.youth.title" class="inline" data-lines="2" placeholder="題"></div>
+            </div>
+            <div class="note">次週欄に入れた内容は、翌週の「今週」欄の初期値になります</div>
+          </div>
+          <div class="pbox" id="box-prayer">
+            <div class="ptitle">覚えて祈りましょう</div>
+            <div class="ro-title"><span class="master-badge">据え置き</span> 全週に効く。ふだんは編集できません <button type="button" class="small" data-edit="prayer">編集</button></div>
+            <fieldset class="rare lock" id="edit-prayer" disabled>
+              <textarea id="prayer-items" rows="6" class="rare-text" placeholder="1 行 1 項目"></textarea>
+              <p><button type="button" class="small" data-save="prayer">保存</button> <button type="button" class="small" data-cancel="prayer">取消</button> <span class="hint">1 行 1 項目。保存するとすぐに全週の紙面に効きます（週の保存とは別）</span></p>
+            </fieldset>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== タブ3：2ページ目 ===== -->
+    <section class="panel" id="t3">
+      <div class="paper">
+        <div class="pcol wide">
+          <div class="pbox" id="box-announce">
+            <div class="ptitle big">報　　告</div>
+            <div class="arow"><span class="n">1.</span><input name="announcements.lead" class="inline"><span class="carry">引き継ぎ</span></div>
+            <div id="paras"></div>
+            <div class="arow add"><span class="n"></span><button type="button" class="small" id="btn-para-add">＋段落を追加</button><span class="note">入りきらないと自動で詰め、それでも溢れたら赤枠</span></div>
+            <div class="arow"><span class="n" id="pf-n"></span><div class="stack grow"><input name="announcements.prayer_for_lead" class="inline"><input name="announcements.prayer_for" class="inline"></div><span class="carry">引き継ぎ</span></div>
+            <div class="afoot">
+              <div class="ro-title"><span class="master-badge">据え置き</span> 牧師連絡先。全週に効く。ふだんは編集できません <button type="button" class="small" data-edit="contact">編集</button></div>
+              <fieldset class="rare lock" id="edit-contact" disabled>
+                <input data-church="pastor_contact" class="inline">
+                <p><button type="button" class="small" data-save="contact">保存</button> <button type="button" class="small" data-cancel="contact">取消</button> <span class="hint">保存するとすぐに全週の紙面に効きます（週の保存とは別）</span></p>
+              </fieldset>
+              <div class="lw-title">★先週の報告★</div>
+              <div><input name="last_week.note" class="inline"><span class="carry">引き継ぎ</span></div>
+            </div>
+          </div>
+          <table class="ptable lw" id="lw-table"></table>
+        </div>
+        <div class="pcol">
+          <div class="pbox" id="box-cover">
+            <div class="cv-date"><span class="ro" id="cv-date"></span><span class="ro" id="cv-no"></span></div>
+            <div class="cv-title">週　　報</div>
+            <fieldset class="rare lock" id="edit-motto" disabled>
+              <div class="cv-motto"><input id="text-motto0" class="inline center"></div>
+              <div class="cv-motto small"><input id="text-motto1" class="inline center"></div>
+              <p class="center"><button type="button" class="small" data-save="motto">保存</button> <button type="button" class="small" data-cancel="motto">取消</button></p>
+            </fieldset>
+            <div class="ro-title center"><span class="master-badge">据え置き</span> 年間の固定文。全週に効く。ふだんは編集できません <button type="button" class="small" data-edit="motto">編集</button></div>
+            <div class="cv-img">（教会の絵）</div>
+            <div class="ro-title center"><span class="master-badge">据え置き</span> 住所・連絡先・献金送金先。全週に効く。ふだんは編集できません <button type="button" class="small" data-edit="church">編集</button></div>
+            <fieldset class="rare lock cv-addr" id="edit-church" disabled>
+              <div class="addr-row"><input data-church="postal" class="inline center" style="width:7.5em" placeholder="〒"><input data-church="address" class="inline center" placeholder="住所"></div>
+              <input data-church="tel_fax" class="inline center" placeholder="Tel/Fax">
+              <input data-church="url" class="inline center" placeholder="URL">
+              <input data-church="email" class="inline center" placeholder="メール">
+              <input data-church="bank_line1" class="inline center" placeholder="献金送金先 1 行目">
+              <input data-church="bank_line2" class="inline center" placeholder="献金送金先 2 行目">
+              <p class="center"><button type="button" class="small" data-save="church">保存</button> <button type="button" class="small" data-cancel="church">取消</button> <span class="hint">保存するとすぐに全週の紙面に効きます</span></p>
+            </fieldset>
+            <div class="cv-reception">（今日の受付・案内：<span data-person="reception" data-filter="title:執事"></span>）<span class="carry">引き継ぎ</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== タブ7：同期（手元＝recovery でだけ出る） ===== -->
+    <section class="panel" id="t7">
+      <h2>正本との同期 <span class="hint">正本は本番（D1・KV）。ここ（手元）は写し。<span id="sync-remote"></span></span></h2>
+      <p><button type="button" id="btn-sync-check">同期状態を確認</button> <button type="button" id="btn-sync-pull-all" disabled>正本の方が新しいものをすべて取り込む</button> <span id="sync-msg" class="hint"></span></p>
+      <table class="ptable sync" id="sync-table"></table>
+      <p class="hint">「取り込む」＝正本 → 手元（上書き）。「送る」＝手元 → 正本（JSON のみ。正本側の前の内容は history に残る）。手元にしかないものは自動では消しません。</p>
+    </section>
+    <!-- ===== タブ6：礼拝スライド ===== -->
+    <section class="panel" id="t6">   <!-- ARCHITECTURE.md §18：4 つのエリア。それぞれ引用聖句と作成ボタン -->
+      <div class="slide-area" data-area="morning">
+        <h2>主日礼拝 <span class="hint">説教中の引用聖句は、説教題のスライドの後に、上から順に節ごとのスライドになります</span></h2>
+        <div class="area-sub">引用聖句 <span class="hint">1 行 1 箇所。書名を選び、章・節を選ぶ（聖書朗読と同じ）</span></div>
+        <div class="refs" data-refs="sermon_refs"></div>
+        <p><button type="button" class="small" data-ref-add="sermon_refs">＋ 引用を追加</button></p>
+        <div class="area-sub prep">準備賛美 <input type="number" min="1" max="999" class="num" data-slides-prep="morning" aria-label="準備賛美の番号"> <span class="prep-title" data-slides-prep-title="morning"></span> <span class="hint">作るたびに入れます（保存しません）。空なら準備賛美のスライドはテンプレのまま残ります</span></div>
+        <p class="warn slides-need" data-slides-need="morning"></p>
+        <p><button type="button" class="primary" data-slides="morning">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（主日礼拝）のとおり</span></p>
+        <pre class="warn" data-slides-warn="morning"></pre>
+      </div>
+      <div class="slide-area" data-area="afternoon">
+        <h2>午後礼拝 <span class="hint">休止・休みの週でも作れます</span></h2>
+        <div class="area-sub">引用聖句 <span class="hint">1 行 1 箇所。書名を選び、章・節を選ぶ（聖書朗読と同じ）</span></div>
+        <div class="refs" data-refs="afternoon_refs"></div>
+        <p><button type="button" class="small" data-ref-add="afternoon_refs">＋ 引用を追加</button></p>
+        <p class="warn slides-need" data-slides-need="afternoon"></p>
+        <p><button type="button" class="primary" data-slides="afternoon">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（午後礼拝）のとおり。ワーシップ曲は入りません</span></p>
+        <pre class="warn" data-slides-warn="afternoon"></pre>
+      </div>
+      <div class="slide-area" data-area="wednesday">
+        <h2>水曜祈祷会 <span class="hint">休止の週でも作れます</span></h2>
+        <div class="area-sub">引用聖句 <span class="hint">1 行 1 箇所。書名を選び、章・節を選ぶ（聖書朗読と同じ）</span></div>
+        <div class="refs" data-refs="wednesday_refs"></div>
+        <p><button type="button" class="small" data-ref-add="wednesday_refs">＋ 引用を追加</button></p>
+        <p class="warn slides-need" data-slides-need="wednesday"></p>
+        <p><button type="button" class="primary" data-slides="wednesday">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（水曜祈祷会）のとおり</span></p>
+        <pre class="warn" data-slides-warn="wednesday"></pre>
+      </div>
+      <div class="slide-area" data-area="other">
+        <h2>その他 <span class="hint"></span></h2>
+        <div class="area-sub">引用聖句 <span class="hint">1 行 1 箇所。書名を選び、章・節を選ぶ（聖書朗読と同じ）</span></div>
+        <div class="refs" data-refs="other_refs"></div>
+        <p><button type="button" class="small" data-ref-add="other_refs">＋ 引用を追加</button></p>
+        <p><button type="button" class="primary" data-slides="other">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（その他）のとおり</span></p>
+        <pre class="warn" data-slides-warn="other"></pre>
+      </div>
+    </section>
+    <section class="panel preview" id="t5">
+      <div data-part="pdf-view"></div>   <!-- PDF の表示（ui/pdfview.mjs）。「作り直す」と進み具合は admin.js が足す -->
+    </section>
+  </form>
+
+  <!-- ===== マスタ（見出しの「マスタ」で開く。どの週にも共通で、週データには書かない） ===== -->
+  <div id="masters" class="form for-masters">
+    <section class="panel active">
+      <!-- 讃頌歌・交読文のマスタと pptx（requirements-todo.md 項目 10。案 A: docs/design/master-files-options.html） -->
+      <div data-part="master-files"></div>   <!-- 讃頌歌・交読文のマスタと pptx（ui/masters.mjs） -->
+      <div data-part="templates"></div>   <!-- テンプレ（背景と色・式順・部品。ui/templates.mjs） -->
+      <p class="hint">「覚えて祈りましょう」「牧師連絡先」「住所・連絡先・献金送金先」「聖句」「標語」は、「週報」の紙面の印刷される位置で「編集」から直します。</p>
+      <h2>名簿 <span class="hint">この画面では閲覧のみ。変更は名簿ファイルで</span></h2>
+      <div id="people-list" class="people"></div>
+      <h2>控えを取る <span class="hint">名簿・曲名・交読文・祈り課題・連絡先をひとつの JSON にしてダウンロード</span></h2>
+      <p><button type="button" id="btn-export">マスタ一式をダウンロード</button></p>
+      <div data-part="replace"></div>   <!-- ファイルの差し替え（ui/replace.mjs） -->
+    </section>
+  </div>
+
+  <!-- 同じ週を別のタブで編集中のときの覆い。週報の側だけに掛ける（マスタは待たずに使える） -->
+  <div id="blocked" class="blocked for-week" hidden>
+    <div class="blocked-box">
+      <h2 id="blocked-title">この週は別のタブで編集中です</h2>
+      <p id="blocked-msg">そのタブに戻って作業を続けてください。見つからない場合は、他のウィンドウ・タブをすべて閉じてください。閉じられると、この画面は自動で編集できるようになります。</p>
+      <p>別の週を開くときは、上の日付（「週を選んでください」）を押して、一覧から選んでください。違う週なら、別のタブで同時に編集できます。</p>
+    </div>
+  </div>
+</main>
+<datalist id="bible-books"></datalist>
+<!-- 新しい週を作る（ARCHITECTURE.md §19）：もとにする週 X・作る日付 Y・写し方 -->
+<dialog id="new-dialog" class="dialog">
+  <h3>新しい週を作る</h3>
+  <label class="drow"><span class="dl">もとにする週</span><select id="new-from"></select></label>
+  <label class="drow"><span class="dl">作る日付</span><input type="date" id="new-date"></label>
+  <div class="drow"><span class="dl">写し方</span>
+    <span class="dopts">
+      <label><input type="radio" name="new-mode" value="fresh" checked> 新しい週として <span class="hint">毎週変わる欄は空</span></label>
+      <label><input type="radio" name="new-mode" value="copy"> 丸ごと複製 <span class="hint">内容をすべて写す</span></label>
+    </span>
+  </div>
+  <p class="hint dnote">写すのは、もとにする週の保存済みの内容です。</p>
+  <div id="new-prune" class="dprune" hidden></div>
+  <p id="new-msg" class="dmsg" hidden></p>
+  <div class="dbtns"><button type="button" id="new-cancel">やめる</button><button type="button" class="primary" id="new-ok">作る</button></div>
+</dialog>
+<script type="module" src="admin.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{
+  // 週報 入力画面 + API の Worker。サイト本体（samplechurch）とは別の Worker で、同じ D1 データベースを共有する
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "samplechurch-shuho",
+  "main": "worker/index.mjs",
+  "compatibility_date": "2026-09-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    // scripts/build-assets.mjs が src/admin → dist/input-shuho/、src/template と src/fonts → dist/shuho-assets/ に集める
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  "d1_databases": [
+    { "binding": "DATA", "database_name": "samplechurch-shuho", "database_id": "<d1-database-id>" },
+    { "binding": "BIBLE", "database_name": "samplechurch-bible", "database_id": "<d1-bible-database-id>" }   // 聖書本文（BOOKS / VERSES）。scripts/import-bible.mjs で投入
+  ],
+  "kv_namespaces": [{ "binding": "FILES", "id": "<kv-namespace-id>" }],   // 歌詞・交読文・テンプレの中身（blobs/<指紋>。今の版の目次は D1 の index/。docs/file-store.md）と PDF の写し
+  "browser": { "binding": "BROWSER" },
+  "vars": { "RETAIN_WEEKS": "5", "GOOGLE_CLIENT_ID": "", "PDF_ENGINE": "render", "PDF_RENDER_URL": "https://your-pdf-service.onrender.com", "SITE_BUILD_WORKER": "<site-worker-tag>", "SHUHO_PUBLIC_ORIGIN": "https://samplechurch-shuho.example.workers.dev", "ACCESS_TEAM_DOMAIN": "your-team.cloudflareaccess.com", "ACCESS_AUD": "<access-aud-shuho>" },   // SHUHO_PUBLIC_ORIGIN: この Worker の公開アドレス（担当者用の窓口から PDF を作るとき、PDF エンジンが紙面の CSS・フォントを取りに来る先。アカウントやドメインを移したら直す）   // ACCESS_TEAM_DOMAIN・ACCESS_AUD: 受付（Access）の証明を確かめる値。証明が無い API は断る（src/lib/auth.mjs の accessGate）。変更の記録の「誰が」にも使う。AUD はこの Worker の受付（Zero Trust のアプリ「samplechurch-shuho - Cloudflare Workers」）のもの。受付を作り直したら・アカウントを移したら直す（直すまで API は全部 403）   // SITE_BUILD_WORKER: サイト Worker（samplechurch）の tag。名前ではない。取り方は README「サイトへの反映」   // PDF_ENGINE: cloudflare | render（render のとき PDF_RENDER_URL と secret PDF_RENDER_SECRET が要る）   // GOOGLE_CLIENT_ID が空ならログインなし（Google Cloud の OAuth クライアント ID を入れる）
+  "triggers": { "crons": ["0 18 * * *"] },   // 毎日 18:00 UTC＝日本時間 3:00 に控えを片付ける（worker/index.mjs の scheduled。docs/file-store.md §3）。無料はアカウントで 5 つまで
+  "observability": { "enabled": true }
+  // 独自ドメインに置くとき（DNS が Cloudflare に移った後）に足す:
+  // "routes": [{ "pattern": "www.example.com/input-shuho*", "zone_name": "example.com" }]
+  // シークレット（wrangler secret put）: ALLOWED_EMAILS（カンマ区切りの許可メール）, SESSION_SECRET（Cookie 署名鍵、長いランダム文字列）
+}

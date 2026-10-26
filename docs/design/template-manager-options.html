@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>テンプレの管理画面の案</title>
+<style>
+/* 入力画面（src/admin/admin.css）と同じ色 */
+:root { --ink:#1d2330; --muted:#5a6375; --rule:#d9dde5; --panel:#fff; --bg:#f4f5f8; --accent:#2b4c7e; --warn:#b3261e; --ok:#2e7d4f; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font-family: "BIZ UDPGothic", "Yu Gothic", "Hiragino Sans", sans-serif; font-size: 14px; color: var(--ink); background: #e8eaef; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2 { font-size: 17px; margin: 36px 0 4px; color: var(--accent); }
+p.lead, ul.lead { margin: 0 0 8px; color: var(--muted); max-width: 980px; line-height: 1.6; }
+.frame { background: var(--bg); border: 1px solid #c3c8d2; margin: 10px 0 4px; width: 1024px; padding: 14px 18px; }
+.panel { background: var(--panel); border: 1px solid var(--rule); border-radius: 6px; padding: 12px 16px; margin: 0 0 12px; }
+.panel h3 { font-size: 16px; margin: 0 0 8px; color: var(--ink); }
+.hint { font-weight: 400; font-size: 12px; color: var(--muted); margin-left: 8px; }
+button { font: inherit; font-size: 13px; padding: 3px 10px; border: 1px solid var(--rule); background: #fff; border-radius: 4px; color: var(--ink); white-space: nowrap; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+button.del { color: var(--warn); }
+.ok { color: var(--ok); } .ng { color: var(--warn); } .muted { color: var(--muted); }
+.check { display: flex; gap: 16px; flex-wrap: wrap; align-items: center; font-size: 13px; padding: 8px 12px; background: #eef5f0; border: 1px solid #cfe3d6; border-radius: 6px; margin: 0 0 12px; }
+.check b { font-weight: 700; }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th { text-align: left; font-weight: 700; color: var(--muted); font-size: 12px; padding: 4px 8px; border-bottom: 1px solid var(--rule); }
+td { padding: 5px 8px; border-bottom: 1px solid #eef0f4; vertical-align: middle; }
+tr.group td { background: #f6f7fa; font-weight: 700; color: var(--accent); }
+td.btns { text-align: right; white-space: nowrap; } td.btns button { margin-left: 4px; }
+.chip { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 9px; background: #e8edf6; color: #2b4c7e; margin-right: 3px; }
+.chip.none { background: #f1f1f1; color: #888; }
+/* 案 B */
+.cols { display: grid; grid-template-columns: 180px 1fr; gap: 12px; }
+.svc { display: flex; flex-direction: column; gap: 4px; }
+.svc div { padding: 8px 10px; border-radius: 6px; background: #fff; border: 1px solid var(--rule); }
+.svc div.on { border-color: var(--accent); box-shadow: inset 3px 0 0 var(--accent); font-weight: 700; }
+ol.order { margin: 0; padding: 0 0 0 26px; } ol.order li { padding: 4px 0; border-bottom: 1px solid #eef0f4; display: flex; align-items: center; gap: 8px; }
+ol.order li .nm { flex: 1; } ol.order li .v { font-size: 12px; color: var(--muted); }
+/* 案 C */
+.colors { display: grid; grid-template-columns: 300px 1fr; gap: 16px; align-items: center; }
+.mini { width: 300px; height: 169px; border-radius: 4px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; font-weight: 700; }
+.mini .t1 { font-size: 26px; } .mini .t2 { font-size: 15px; }
+.crow { display: flex; align-items: center; gap: 10px; margin: 6px 0; }
+.crow label { width: 7em; } .sw { width: 34px; height: 24px; border: 1px solid #aab; border-radius: 3px; } .crow code { font-size: 13px; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(176px, 1fr)); gap: 8px; }
+.tile { border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; background: #fff; }
+.tile .nm { font-weight: 700; } .tile .meta { font-size: 11px; color: var(--muted); margin: 2px 0 4px; }
+.tile .b { margin-top: 6px; display: flex; gap: 4px; flex-wrap: wrap; } .tile .b button { font-size: 12px; padding: 1px 7px; }
+.orders { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.orders > div { border: 1px solid var(--rule); border-radius: 6px; padding: 8px 10px; background: #fff; }
+</style>
+</head>
+<body>
+<h1>テンプレの管理画面の案（2026-10-24）</h1>
+<p class="lead">マスタの画面に「テンプレ」の欄を置き、背景（背景.pptx・背景.json）・式順 4 つ・部品を、ダウンロード・差し替え・追加・削除できるようにする（docs/pptx-template.md）。差し替えるときにその場で確かめ（§6）、作れなくなる礼拝があれば知らせる。牧師の画面と担当者ページで同じ部品（src/ui/）。見本の値は仮のもの。</p>
+
+<h2>案 A: 一覧表（ファイルごとの 1 つの表）</h2>
+<p class="lead">讃頌歌・交読文の pptx の一覧と同じ形。背景・式順・部品を 1 つの表に並べる。色は背景.json をダウンロードして直し、差し替える。</p>
+<div class="frame">
+  <div class="panel">
+    <h3>テンプレ <span class="hint">スライドの背景・式順・部品。変えると、次に作るスライドから効きます（前の版は history に残ります）</span></h3>
+    <div class="check"><b>確かめ</b> <span class="ok">● 主日礼拝 作れる</span><span class="ok">● 午後礼拝 作れる</span><span class="ok">● 水曜祈祷会 作れる</span><span class="ok">● その他 作れる</span><span class="muted">注意 0 件</span></div>
+    <table>
+      <tr><th>ファイル</th><th>使う礼拝</th><th>大きさ</th><th>置いた日</th><th></th></tr>
+      <tr class="group"><td colspan="5">背景</td></tr>
+      <tr><td>背景.pptx</td><td><span class="chip">全部</span></td><td>139 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button></td></tr>
+      <tr><td>背景.json <span class="muted">（背景色 0000FF・基本 FFFFFF・強調 FFFF00）</span></td><td><span class="chip">全部</span></td><td>1 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button></td></tr>
+      <tr class="group"><td colspan="5">式順</td></tr>
+      <tr><td>worship.json（主日礼拝） <span class="muted">25 行</span></td><td><span class="chip">主日礼拝</span></td><td>2 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button></td></tr>
+      <tr><td>afternoon.json（午後礼拝） <span class="muted">4 行</span></td><td><span class="chip">午後礼拝</span></td><td>1 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button></td></tr>
+      <tr class="group"><td colspan="5">部品（23 個） <button style="float:right">部品を追加…</button></td></tr>
+      <tr><td>賛美</td><td><span class="chip">主日礼拝</span><span class="chip">午後礼拝</span><span class="chip">水曜祈祷会</span></td><td>186 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button><button class="del">削除</button></td></tr>
+      <tr><td>聖句</td><td><span class="chip">4 つとも</span></td><td>182 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button><button class="del">削除</button></td></tr>
+      <tr><td>前奏</td><td><span class="chip none">使っていない</span></td><td>340 KB</td><td>10/24</td><td class="btns"><button>ダウンロード</button><button>差し替え…</button><button class="del">削除</button></td></tr>
+      <tr><td colspan="5" class="muted">…（ほか 20 個）</td></tr>
+    </table>
+    <p><button>テンプレ一式をダウンロード（zip）</button></p>
+  </div>
+</div>
+
+<h2>案 B: 礼拝ごと（式順を中心に）</h2>
+<p class="lead">左で礼拝を選ぶと、その式順を上から順に並べ、行ごとに部品の状態と差し替えを出す。背景と色は別の枠で、色はその場で選ぶ。</p>
+<div class="frame">
+  <div class="check"><b>確かめ</b> <span class="ok">● 主日礼拝</span><span class="ok">● 午後礼拝</span><span class="ok">● 水曜祈祷会</span><span class="ok">● その他</span></div>
+  <div class="cols">
+    <div class="svc"><div class="on">主日礼拝<br><span class="muted" style="font-weight:400;font-size:12px">25 行</span></div><div>午後礼拝</div><div>水曜祈祷会</div><div>その他</div><div style="margin-top:10px">背景と色</div><div>使っていない部品（3）</div></div>
+    <div class="panel" style="margin:0">
+      <h3>主日礼拝の式順 <span class="hint">worship.json</span> <button style="float:right">式順をダウンロード</button> <button style="float:right;margin-right:4px">式順を差し替え…</button></h3>
+      <ol class="order">
+        <li><span class="nm">準備賛美</span><span class="v">曲: 準備賛美</span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">主日礼拝</span><span class="v"></span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">黙祷</span><span class="v"></span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">招詞</span><span class="v"></span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">聖句</span><span class="v">聖句: 招詞</span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">司会者祈祷</span><span class="v"></span><span class="ok">●</span><button>部品…</button></li>
+        <li><span class="nm">賛美</span><span class="v">曲: 賛美1</span><span class="ok">●</span><button>部品…</button></li>
+        <li class="muted">…（ほか 18 行）</li>
+      </ol>
+    </div>
+  </div>
+</div>
+
+<h2>案 C: 3 段（背景と色・式順・部品）</h2>
+<p class="lead">上に「背景と色」：見本のスライドを見ながら 3 色をその場で選んで保存（背景.json を書く）。中に式順 4 つ、下に部品をタイルで並べ、どの礼拝で使っているかを付ける（差し替える前に影響する礼拝が分かる）。</p>
+<div class="frame">
+  <div class="check"><b>確かめ</b> <span class="ok">● 主日礼拝 作れる</span><span class="ok">● 午後礼拝 作れる</span><span class="ok">● 水曜祈祷会 作れる</span><span class="ok">● その他 作れる</span><span class="muted">注意 0 件</span> <button style="margin-left:auto">確かめ直す</button></div>
+  <div class="panel">
+    <h3>背景と色 <span class="hint">全部のスライドに効きます</span></h3>
+    <div class="colors">
+      <div class="mini" style="background:#0000FF"><span class="t1" style="color:#FFFFFF">賛　美</span><span class="t2" style="color:#FFFF00">ローマ人への手紙 3章23節</span></div>
+      <div>
+        <div class="crow"><label>背景色</label><span class="sw" style="background:#0000FF"></span><code>0000FF</code> <label style="width:auto;margin-left:10px"><input type="checkbox"> 背景.pptx の背景のまま（写真）</label></div>
+        <div class="crow"><label>基本の文字</label><span class="sw" style="background:#FFFFFF"></span><code>FFFFFF</code></div>
+        <div class="crow"><label>強調の文字</label><span class="sw" style="background:#FFFF00"></span><code>FFFF00</code> <span class="hint">聖句の出典・交読文の一方の声</span></div>
+        <p style="margin:8px 0 0"><button class="primary">色を保存</button> <span class="hint">背景.pptx（139 KB・10/24）</span> <button>ダウンロード</button> <button>差し替え…</button></p>
+      </div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>式順 <span class="hint">並びと、行ごとの曲・聖句（JSON）</span></h3>
+    <div class="orders">
+      <div><b>主日礼拝</b> <span class="muted">25 行</span><br><span class="ok">● 作れる</span><div style="margin-top:6px"><button>ダウンロード</button> <button>差し替え…</button></div></div>
+      <div><b>午後礼拝</b> <span class="muted">4 行</span><br><span class="ok">● 作れる</span><div style="margin-top:6px"><button>ダウンロード</button> <button>差し替え…</button></div></div>
+      <div><b>水曜祈祷会</b> <span class="muted">5 行</span><br><span class="ok">● 作れる</span><div style="margin-top:6px"><button>ダウンロード</button> <button>差し替え…</button></div></div>
+      <div><b>その他</b> <span class="muted">1 行</span><br><span class="ok">● 作れる</span><div style="margin-top:6px"><button>ダウンロード</button> <button>差し替え…</button></div></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>部品 <span class="hint">23 個。中身（図形と目印）だけを使い、背景は上の背景になります</span> <button style="float:right">部品を追加…</button></h3>
+    <div class="tiles">
+      <div class="tile"><div class="nm">賛美</div><div class="meta">2 枚・186 KB・10/24</div><span class="chip">主日礼拝</span><span class="chip">午後礼拝</span><span class="chip">水曜祈祷会</span><div class="b"><button>ダウンロード</button><button>差し替え…</button></div></div>
+      <div class="tile"><div class="nm">聖句</div><div class="meta">1 枚・182 KB・10/24</div><span class="chip">4 つとも</span><div class="b"><button>ダウンロード</button><button>差し替え…</button></div></div>
+      <div class="tile"><div class="nm">説教</div><div class="meta">1 枚・370 KB・10/24</div><span class="chip">主日礼拝</span><span class="chip">午後礼拝</span><span class="chip">水曜祈祷会</span><div class="b"><button>ダウンロード</button><button>差し替え…</button></div></div>
+      <div class="tile"><div class="nm">前奏</div><div class="meta">1 枚・340 KB・10/24</div><span class="chip none">使っていない</span><div class="b"><button>ダウンロード</button><button>差し替え…</button><button class="del">削除</button></div></div>
+      <div class="tile"><div class="nm">使徒信条</div><div class="meta">6 枚・365 KB・10/24</div><span class="chip">主日礼拝</span><div class="b"><button>ダウンロード</button><button>差し替え…</button></div></div>
+      <div class="tile muted" style="display:flex;align-items:center;justify-content:center">…（ほか 18 個）</div>
+    </div>
+    <p style="margin:10px 0 0"><button>テンプレ一式をダウンロード（zip）</button></p>
+  </div>
+</div>
+
+<h2>選んだもの: 案 C</h2>
+<ul class="lead">
+  <li>色をその場で選べる（案 A は背景.json を手で直して差し替える。色コードの打ち間違いが起きやすい）。見本のスライドで、読めるかをその場で確かめられる。</li>
+  <li>部品ごとに「どの礼拝で使っているか」が見えるので、差し替える前に影響する所が分かる（設計の「影響範囲を閉じる」の確かめが画面でできる）。使っていない部品だけ削除できる。</li>
+  <li>案 B は式順が中心で分かりやすいが、同じ部品が何度も出てくる（賛美・聖句・黙祷）ので、部品の差し替えがどの礼拝に効くかが逆に見えにくい。式順の並べ替えまで画面で作ると大きくなる（いまは JSON の差し替えで足りる）。</li>
+</ul>
+</body>
+</html>

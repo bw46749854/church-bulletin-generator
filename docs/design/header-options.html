@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ヘッダの案</title>
+<style>
+/* 入力画面（src/admin/admin.css）と同じ色 */
+:root { --ink:#1d2330; --muted:#5a6375; --rule:#d9dde5; --panel:#fff; --bg:#f4f5f8; --accent:#2b4c7e; --warn:#b3261e; --ok:#2e7d4f; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font-family: "BIZ UDPGothic", "Yu Gothic", "Hiragino Sans", sans-serif; font-size: 14px; color: var(--ink); background: #e8eaef; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2 { font-size: 17px; margin: 36px 0 4px; color: var(--accent); }
+p.lead { margin: 0 0 8px; color: var(--muted); max-width: 980px; line-height: 1.6; }
+.frame { background: var(--bg); border: 1px solid #c3c8d2; margin: 10px 0 4px; overflow: hidden; }
+.frame.w1024 { width: 1024px; } .frame.w768 { width: 768px; }
+.caption { font-size: 12px; color: var(--muted); margin: 2px 0 10px; }
+.fake-tabs { display: flex; gap: 4px; padding: 10px 16px 0; }
+.fake-tabs span { padding: 6px 14px; background: #e6e8ee; border-radius: 6px 6px 0 0; font-size: 14px; }
+.fake-tabs span.on { background: #fff; color: var(--accent); font-weight: 700; }
+.fake-tabs .r { margin-left: auto; }
+.fake-body { margin: 0 16px; height: 70px; background: #fff; border: 1px solid var(--rule); }
+button { font: inherit; padding: 6px 14px; border: 1px solid var(--rule); background: #fff; border-radius: 4px; color: var(--ink); white-space: nowrap; }
+button.primary { background: var(--accent); color: #fff; border-color: var(--accent); font-weight: 700; }
+button.ghost { border-color: transparent; background: transparent; color: var(--muted); }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: 1px; }
+
+/* ===== 案 A：週が主役 ===== */
+.a { display: flex; align-items: center; height: 56px; padding: 0 16px; gap: 16px; background: var(--panel); border-bottom: 1px solid var(--rule); }
+.a .brand { font-size: 13px; color: var(--muted); }
+.a .week { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 12px; border: 1px solid var(--rule); border-radius: 6px; background: #fff; }
+.a .week .d { font-size: 18px; font-weight: 700; letter-spacing: .02em; }
+.a .week .no { font-size: 12px; color: var(--muted); }
+.a .week .caret { color: var(--muted); font-size: 12px; }
+.a .sp { flex: 1; }
+.a .state { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.a .state.dirty { color: #8a5a00; }
+.a .state.dirty .dot { background: #e0a100; }
+.a .state.saved .dot { background: var(--ok); }
+.a .publish { font-size: 13px; color: var(--accent); background: none; border: none; padding: 0; text-decoration: underline; text-underline-offset: 3px; }
+.a .more { font-size: 18px; padding: 2px 10px; line-height: 1; }
+
+/* ===== 案 B：ツールバー ===== */
+.b { display: flex; align-items: center; height: 52px; padding: 0 14px; gap: 10px; background: var(--panel); border-bottom: 1px solid var(--rule); }
+.b .brand { font-weight: 700; color: var(--accent); font-size: 15px; margin-right: 6px; }
+.b select { font: inherit; padding: 5px 8px; border: 1px solid var(--rule); border-radius: 4px; background: #fff; }
+.b .sep { width: 1px; height: 26px; background: var(--rule); margin: 0 4px; }
+.b .sp { flex: 1; }
+.b .state { font-size: 13px; color: #8a5a00; white-space: nowrap; }
+.b .state .dot { background: #e0a100; }
+
+/* ===== 案 C：手順 ===== */
+.c { display: flex; align-items: center; height: 60px; padding: 0 16px; gap: 0; background: var(--panel); border-bottom: 1px solid var(--rule); }
+.c .step { display: flex; align-items: center; gap: 8px; padding: 0 14px; height: 100%; border-right: 1px solid var(--rule); }
+.c .step:first-child { padding-left: 0; }
+.c .n { width: 22px; height: 22px; border-radius: 50%; background: #e3e8f2; color: var(--accent); font-size: 12px; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.c .step.done .n { background: var(--ok); color: #fff; }
+.c .step.now .n { background: var(--accent); color: #fff; }
+.c .t { display: flex; flex-direction: column; line-height: 1.25; }
+.c .t small { font-size: 11px; color: var(--muted); }
+.c .t b { font-size: 14px; white-space: nowrap; }
+.c .sp { flex: 1; }
+.c .more { font-size: 18px; padding: 2px 10px; line-height: 1; margin-left: 10px; }
+
+/* 狭い幅（768px）での振る舞い */
+.w768 .a .brand, .w768 .b .brand { display: none; }
+.w768 .a .week .no { display: none; }
+.w768 .b .newlbl { display: none; }
+.w768 .c .t small { display: none; }
+.w768 .c .step { padding: 0 9px; }
+
+.pick { background: #fff; border: 2px solid var(--accent); border-radius: 6px; padding: 14px 18px; margin: 28px 0 0; max-width: 980px; line-height: 1.7; }
+.pick h2 { margin-top: 0; }
+table.cmp { border-collapse: collapse; margin: 10px 0; font-size: 13px; background: #fff; }
+table.cmp th, table.cmp td { border: 1px solid var(--rule); padding: 6px 10px; text-align: left; vertical-align: top; }
+table.cmp th { background: #f0f2f6; }
+</style>
+</head>
+<body>
+<h1>入力画面のヘッダ — 3 つの案</h1>
+<p class="lead">2026-10-11。3 案とも共通: 1 段で高さが変わらない／「どの週か」「保存の状態」「保存」を常に見せる／フォント・JSON の読み込み・エンジンの版・ログアウトはヘッダの主な場所から外す（「…」の中か、マスタタブのシステム欄へ）／メッセージの行は置かない（知らせはヘッダの下の帯、入力の誤りは欄の横）。
+状態の例は「未保存の変更あり」。各案を 1024px（iPad 横・小さめの PC）と 768px（iPad 縦）で示す。</p>
+
+<!-- ============ 案 A ============ -->
+<h2>案 A　週が主役</h2>
+<p class="lead">いま開いている週を大きく見せる。週の切り替え・新しい週・JSON の読み込みは、週を押すと開く一覧の中へ。保存の状態は保存ボタンの左に常に出し、「サイトに反映」は保存済みのときだけ状態の横に出す（保存の次の手順として）。</p>
+<div class="frame w1024">
+  <div class="a">
+    <span class="brand">週報 入力</span>
+    <span class="week"><span class="d">2026年10月18日（日）</span><span class="no">第42号</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state dirty"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary">保存</button>
+    <button class="ghost more" title="その他">…</button>
+  </div>
+  <div class="fake-tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>マスタ</span><span>スライド</span><span class="r">プレビュー</span></div><div class="fake-body"></div>
+</div>
+<div class="caption">1024px・未保存のとき</div>
+<div class="frame w1024">
+  <div class="a">
+    <span class="brand">週報 入力</span>
+    <span class="week"><span class="d">2026年10月18日（日）</span><span class="no">第42号</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state saved"><span class="dot"></span>保存済み 10:42</span>
+    <button class="publish">サイトに反映…</button>
+    <button class="primary">保存</button>
+    <button class="ghost more" title="その他">…</button>
+  </div>
+</div>
+<div class="caption">1024px・保存済みのとき（「サイトに反映…」が出る）</div>
+<div class="frame w768">
+  <div class="a">
+    <span class="week"><span class="d">2026年10月18日（日）</span><span class="caret">▼</span></span>
+    <span class="sp"></span>
+    <span class="state dirty"><span class="dot"></span>未保存の変更があります</span>
+    <button class="primary">保存</button>
+    <button class="ghost more" title="その他">…</button>
+  </div>
+</div>
+<div class="caption">768px</div>
+
+<!-- ============ 案 B ============ -->
+<h2>案 B　ツールバー</h2>
+<p class="lead">今の部品をそのまま整列させた、業務アプリによくある形。左に週の選択と新しい週、右に状態・サイトに反映・保存。慣れた見た目で変更が少ないが、主役が分かりにくく、「保存」と「サイトに反映」が並ぶ。</p>
+<div class="frame w1024">
+  <div class="b">
+    <span class="brand">週報 入力</span>
+    <select><option>2026-10-18</option></select>
+    <button><span class="newlbl">＋ </span>新しい週</button>
+    <span class="sep"></span>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存</span>
+    <button>サイトに反映</button>
+    <button class="primary">保存</button>
+    <button class="ghost" style="font-size:18px;padding:2px 10px;line-height:1">…</button>
+  </div>
+  <div class="fake-tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>マスタ</span><span>スライド</span><span class="r">プレビュー</span></div><div class="fake-body"></div>
+</div>
+<div class="caption">1024px</div>
+<div class="frame w768">
+  <div class="b">
+    <select><option>2026-10-18</option></select>
+    <button><span class="newlbl">＋ </span>新しい週</button>
+    <span class="sp"></span>
+    <span class="state"><span class="dot"></span>未保存</span>
+    <button>サイトに反映</button>
+    <button class="primary">保存</button>
+    <button class="ghost" style="font-size:18px;padding:2px 10px;line-height:1">…</button>
+  </div>
+</div>
+<div class="caption">768px</div>
+
+<!-- ============ 案 C ============ -->
+<h2>案 C　手順</h2>
+<p class="lead">毎週の流れ（週を選ぶ → 入力する → 保存する → サイトに反映）を左から並べ、いまどこまで済んだかを番号の色で見せる。手順は分かりやすいが、幅を使い、操作の場所と表示の場所が混ざる。</p>
+<div class="frame w1024">
+  <div class="c">
+    <span class="step done"><span class="n">1</span><span class="t"><small>週</small><b>2026年10月18日 ▼</b></span></span>
+    <span class="step now"><span class="n">2</span><span class="t"><small>入力</small><b>未保存の変更あり</b></span></span>
+    <span class="step"><span class="n">3</span><button class="primary">保存</button></span>
+    <span class="step"><span class="n">4</span><button>サイトに反映</button></span>
+    <span class="sp"></span>
+    <button class="ghost more">…</button>
+  </div>
+  <div class="fake-tabs"><span class="on">主日礼拝</span><span>午後・水曜・次週</span><span>報告・表紙</span><span>マスタ</span><span>スライド</span><span class="r">プレビュー</span></div><div class="fake-body"></div>
+</div>
+<div class="caption">1024px</div>
+<div class="frame w768">
+  <div class="c">
+    <span class="step done"><span class="n">1</span><span class="t"><b>10月18日 ▼</b></span></span>
+    <span class="step now"><span class="n">2</span><span class="t"><b>未保存</b></span></span>
+    <span class="step"><span class="n">3</span><button class="primary">保存</button></span>
+    <span class="step"><span class="n">4</span><button>反映</button></span>
+    <span class="sp"></span>
+    <button class="ghost more">…</button>
+  </div>
+</div>
+<div class="caption">768px</div>
+
+<div class="pick">
+<h2>選んだ案：A（週が主役）</h2>
+<table class="cmp">
+<tr><th></th><th>A 週が主役</th><th>B ツールバー</th><th>C 手順</th></tr>
+<tr><th>どの週かが一目で分かる</th><td>◎ 大きな日付</td><td>△ 小さな選択欄</td><td>○</td></tr>
+<tr><th>未保存が分かる</th><td>◎ 保存ボタンの隣に文で</td><td>○ 短い語</td><td>○ 手順 2 の中</td></tr>
+<tr><th>保存と反映を取り違えない</th><td>◎ 反映は保存済みのときだけ、文字のリンクで</td><td>× 同じ形のボタンが隣り合う</td><td>○ 番号で分かれる</td></tr>
+<tr><th>768px で 1 段に収まる</th><td>◎</td><td>○</td><td>△ 語を削る必要がある</td></tr>
+<tr><th>毎週の操作の少なさ</th><td>◎ 開くと最新の週が開いている。触るのは保存だけ</td><td>○</td><td>○</td></tr>
+<tr><th>作り直す量</th><td>中（週の一覧のポップアップが新しく要る）</td><td>小</td><td>中〜大</td></tr>
+</table>
+<p>理由: 牧師が毎週見る必要があるのは「どの週か」と「保存したか」の 2 つで、A はこの 2 つが最も目立つ。
+「サイトに反映」を保存済みのときだけ出すことで、まだ保存していない内容を反映しようとする誤りも、保存のつもりで反映を押す誤りも、形の上で起きなくなる。
+B は作り直しが一番少ないが、今の「並べただけ」に近く、主役が無い問題が残る。C は手順の学習には良いが、毎週同じ人が使う画面としては説明が多すぎ、幅も足りない。</p>
+<p>週を押すと開く一覧の中身: 保存済みの週（新しい順）／新しい週を作る（日付を選んで「作る」）／この週の日付を変更…／JSON を読み込む…（どれも「どの週を扱うか」の操作なのでまとめる）。<br>「…」（その他）の中身: フォント（評価用）／ログイン中のアカウントとログアウト。エンジンの版・生成回数は「マスタ」タブの最後の「システム」欄へ移す。</p>
+</div>
+</body>
+</html>

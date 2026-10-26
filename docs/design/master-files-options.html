@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>讃頌歌・交読文の管理画面の案</title>
+<style>
+/* 入力画面（src/admin/admin.css）と同じ色 */
+:root { --ink:#1d2330; --muted:#5a6375; --rule:#d9dde5; --panel:#fff; --bg:#f4f5f8; --accent:#2b4c7e; --warn:#b3261e; --ok:#2e7d4f; --amber:#8a5a00; }
+* { box-sizing: border-box; }
+body { margin: 0; padding: 24px; font-family: "BIZ UDPGothic", "Yu Gothic", "Hiragino Sans", sans-serif; font-size: 14px; color: var(--ink); background: #e8eaef; }
+h1 { font-size: 20px; margin: 0 0 6px; }
+h2 { font-size: 17px; margin: 36px 0 4px; color: var(--accent); }
+p.lead { margin: 0 0 8px; color: var(--muted); max-width: 980px; line-height: 1.6; }
+.frame { background: var(--panel); border: 1px solid #c3c8d2; margin: 10px 0 4px; padding: 12px; width: 900px; max-width: 100%; }
+.caption { font-size: 12px; color: var(--muted); margin: 2px 0 10px; max-width: 900px; line-height: 1.6; }
+button { font: inherit; font-size: 13px; padding: 4px 10px; border: 1px solid var(--rule); background: #fff; border-radius: 4px; color: var(--ink); white-space: nowrap; }
+button.on { background: var(--accent); color: #fff; border-color: var(--accent); }
+button:disabled { opacity: .5; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; font-size: 13px; }
+.bar .sp { flex: 1; }
+.badge { display: inline-block; font-size: 11.5px; padding: 0 6px; border-radius: 3px; }
+.badge.miss { background: #fff4e5; color: var(--amber); border: 1px solid #f0c98a; }
+.badge.orphan { background: #eceef2; color: var(--muted); border: 1px solid var(--rule); }
+table { border-collapse: collapse; width: 100%; font-size: 13px; }
+th, td { border-bottom: 1px solid var(--rule); padding: 3px 8px; text-align: left; }
+th { color: var(--muted); font-weight: 400; background: #f7f8fa; }
+tr.sel td { background: #eef2f8; }
+td.no { width: 4em; text-align: right; }
+.scroll { max-height: 150px; overflow: hidden; border: 1px solid var(--rule); }
+.detail { border: 1px solid var(--rule); border-radius: 4px; padding: 8px 12px; margin-top: 8px; background: #fbfcfe; font-size: 13px; }
+.detail .h { font-weight: 700; color: var(--accent); margin-bottom: 4px; }
+.detail .row { display: flex; gap: 8px; align-items: center; padding: 3px 0; flex-wrap: wrap; }
+.detail .row .lbl { width: 3.5em; color: var(--muted); }
+.detail input { font: inherit; padding: 2px 6px; border: 1px solid var(--rule); border-radius: 4px; }
+.cols { display: grid; grid-template-columns: 1.3fr 1fr; gap: 12px; }
+.cols .detail { margin-top: 0; }
+.picked { border: 2px solid #2e7d4f; }
+.verdict { margin: 4px 0 0; font-weight: 700; color: var(--ok); }
+</style>
+</head>
+<body>
+<h1>讃頌歌・交読文のマスタと pptx の管理画面 — 3 案</h1>
+<p class="lead">要件は <code>docs/requirements-todo.md</code> 項目 10。どの案も「一覧＋選んだ 1 行だけの操作」（260 行×削除 3 つを並べない）。違いは操作パネルの置き場所。</p>
+
+<h2>案 A：一覧（高さ固定）の下に操作パネル　← 採用</h2>
+<div class="frame picked">
+  <div class="bar"><button class="on">讃頌歌 260 ⚠1</button><button>交読文 64</button><span class="sp"></span><label><input type="radio" checked> すべて</label><label><input type="radio"> pptx 未登録 1</label><label><input type="radio"> マスタ未登録 0</label> 番号 <input size="4"></div>
+  <div class="bar">新規 番号 <input size="4"> 題 <input size="20"> <button>登録</button><span class="sp"></span><button>削除を有効にする</button></div>
+  <div class="scroll"><table>
+    <tr><th>番号</th><th>題</th><th>pptx</th></tr>
+    <tr class="sel"><td class="no">6</td><td>父、み子、み霊の</td><td><span class="badge miss">pptx 未登録</span></td></tr>
+    <tr><td class="no">9</td><td>聖なる、聖なる、聖なるかな</td><td>9 枚・16:9・2014-11-21</td></tr>
+    <tr><td class="no">11</td><td>主のみ稜威とみさかえとを</td><td>5 枚・16:9・2026-02-21</td></tr>
+  </table></div>
+  <div class="detail"><div class="h">讃頌歌 6</div>
+    <div class="row"><span class="lbl">マスタ</span>題 <input value="父、み子、み霊の" size="24"> <button>題を更新</button> <button disabled>マスタだけ削除</button></div>
+    <div class="row"><span class="lbl">pptx</span><span class="badge miss">未登録</span> <input type="file"> <button>アップロード</button> <button disabled>pptx だけ削除</button></div>
+    <div class="row"><span class="sp" style="flex:1"></span><button disabled>両方削除</button></div>
+  </div>
+</div>
+<p class="caption">要件の図そのまま。どの幅でも同じ並び（狭い画面でも縦に積むだけ）。削除を有効にするボタンと削除ボタンが同じ画面内に収まる（一覧は高さ固定でスクロールするので、パネルは常に見える）。</p>
+<p class="verdict">選んだ理由: 牧師・担当者の端末がまだ決まっていない（PC か iPad か）ので、幅で形が変わらない案にした。承認済みの要件の図と同じで、説明が要らない。</p>
+
+<h2>案 B：左右 2 列（一覧が左、操作が右）</h2>
+<div class="frame">
+  <div class="bar"><button class="on">讃頌歌 260 ⚠1</button><button>交読文 64</button><span class="sp"></span><button>削除を有効にする</button></div>
+  <div class="cols">
+    <div class="scroll"><table>
+      <tr><th>番号</th><th>題</th><th>pptx</th></tr>
+      <tr class="sel"><td class="no">6</td><td>父、み子、み霊の</td><td><span class="badge miss">未登録</span></td></tr>
+      <tr><td class="no">9</td><td>聖なる、聖なる…</td><td>9 枚</td></tr>
+    </table></div>
+    <div class="detail"><div class="h">讃頌歌 6</div>
+      <div class="row"><span class="lbl">マスタ</span><input value="父、み子、み霊の" size="16"></div>
+      <div class="row"><button>題を更新</button><button disabled>マスタだけ削除</button></div>
+      <div class="row"><span class="lbl">pptx</span><span class="badge miss">未登録</span></div>
+      <div class="row"><button>アップロード</button><button disabled>pptx だけ削除</button></div>
+      <div class="row"><button disabled>両方削除</button></div>
+    </div>
+  </div>
+</div>
+<p class="caption">PC では一覧と操作を同時に広く見られる。ただし一覧の列が窮屈になり、題が切れる。狭い画面では A と同じ縦積みになるので、幅によって見た目が 2 通りになる。</p>
+
+<h2>案 C：行を開く（選んだ行の直下に操作が出る）</h2>
+<div class="frame">
+  <div class="bar"><button class="on">讃頌歌 260 ⚠1</button><button>交読文 64</button><span class="sp"></span><button>削除を有効にする</button></div>
+  <table>
+    <tr><th>番号</th><th>題</th><th>pptx</th></tr>
+    <tr class="sel"><td class="no">▾ 6</td><td>父、み子、み霊の</td><td><span class="badge miss">pptx 未登録</span></td></tr>
+    <tr><td colspan="3"><div class="detail" style="margin:4px 0">
+      <div class="row"><span class="lbl">マスタ</span><input value="父、み子、み霊の" size="20"> <button>題を更新</button> <button disabled>マスタだけ削除</button></div>
+      <div class="row"><span class="lbl">pptx</span><input type="file"> <button>アップロード</button> <button disabled>pptx だけ削除</button> <button disabled>両方削除</button></div>
+    </div></td></tr>
+    <tr><td class="no">▸ 9</td><td>聖なる、聖なる、聖なるかな</td><td>9 枚・16:9・2014-11-21</td></tr>
+  </table>
+</div>
+<p class="caption">操作が行のすぐ下に出て、どの番号を触っているかが一番はっきりする。ただし一覧の下の方の行を開くと、上の「削除を有効にする」が画面の外に出る（固定表示にする手間が要る）。開いた行の分だけ一覧が上下に動く。</p>
+</body>
+</html>

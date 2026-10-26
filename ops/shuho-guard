@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+# Claude Code の PreToolUse(Bash) フック。合言葉ファイルと保護設定に触れる Bash を実行前に止める。
+#   設置: sudo install -m 755 -o root -g root ops/shuho-guard /usr/local/bin/shuho-guard
+#   登録: .claude/settings.json の hooks.PreToolUse（matcher: "Bash"）
+# 終了コード 2 で実行を拒否し、標準エラーの文が Claude に返る。
+#
+# 正規の入口 shuho-access を「許可」として列挙しないのが肝。例外を書くとそこが抜け道になる。
+# shuho-access の呼び出しには下の禁止語がひとつも含まれないので、素通しの穴を作らずに通る。
+input=$(cat)
+cmd=$(printf '%s' "$input" | python3 -c 'import json,sys;print(json.load(sys.stdin).get("tool_input",{}).get("command",""))' 2>/dev/null) || exit 0
+
+if printf '%s' "$cmd" | grep -Eqi '/etc/shuho|access\.env|\.access\.local|CF_ACCESS_CLIENT|sudoers|shuho-guard|\.claude/settings'; then
+  echo '合言葉ファイルと保護設定には触れられません。リハーサル環境の参照は shuho-access を使ってください（例: shuho-access /input-shuho/api/engine）。' >&2
+  exit 2
+fi
+exit 0

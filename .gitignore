@@ -1,0 +1,29 @@
+node_modules/
+out/
+.local-libs/
+src/template/.rendered-*.html
+
+# 運用データは Git に入れない（本番は D1、ローカルは data/ 直下）。
+# 基準: 開発者がエディタで変えるもの → Git、運用者が画面から変えるもの → D1。
+# 無ければ data/examples/ の仮名化サンプルで動く。
+data/weeks/*
+!data/weeks/.gitkeep
+data/masters/*
+!data/masters/.gitkeep
+data/prayer-list.json
+data/texts.json
+data/meta/
+data/remote.json
+data/PULLED_AT
+data/history/
+data/church.json
+dist/
+dist-slides/
+.wrangler/
+.dev.vars
+data/files/
+data/index/
+data/bible.sqlite
+
+# Cloudflare Access のサービストークン（私＝Claude がリハーサル環境を見るための合言葉）
+.access.local

@@ -1,0 +1,12 @@
+{
+  "name": "サンプル教会",
+  "denomination": "サンプル教団",
+  "postal": "〒100-0000",
+  "address": "東京都千代田区サンプル1-2-3",
+  "tel_fax": "Tel/Fax:03-0000-0000",
+  "url": "http://example.com",
+  "email": "church@example.com",
+  "bank_line1": "献金送金先＝サンプル銀行サンプル支店（店番号000）",
+  "bank_line2": "普通口座0000000 宗教法人サンプル教会",
+  "pastor_contact": "※山田太郎牧師連絡先　携帯電話●090-0000-0000　LINE ID●example"
+}

@@ -1,0 +1,339 @@
+{
+  "bulletin_title": "週　　報",
+  "doxology": {
+    "number": 6,
+    "title": "父、み子、み霊の"
+  },
+  "apostles_creed": {
+    "title": "使 徒 信 条",
+    "lines": [
+      "我は天地の造り主、全能の父な",
+      "る神を信ず。我はその独り子、我",
+      "らの主、イエス・キリストを信ず。",
+      "主は聖霊によりてやどり、おとめ",
+      "マリヤより生まれ、ポンテオ・ピラト",
+      "のもとに苦しみを受け、十字架に",
+      "つけられ、死にて葬られ、陰府に",
+      "くだり、三日目に死人の内よりよ",
+      "みがえり、天にのぼり、全能の父",
+      "なる神の右に座したまえり。かし",
+      "こよりきたりて生ける者と死にたる",
+      "者とを審きたまわん。我は聖霊を",
+      "信ず、聖なる公同の教会、聖徒",
+      "の交わり、罪のゆるし、からだのよ",
+      "みがえり、とこしえの命を信ず。"
+    ],
+    "amen": "アーメン"
+  },
+  "morning": {
+    "time_label": "午前11時",
+    "program": [
+      {
+        "label": "前奏",
+        "right": "黙祷"
+      },
+      {
+        "label": "招詞",
+        "content": "call_to_worship",
+        "right": "司会者"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:0",
+        "right": "起立"
+      },
+      {
+        "label": "使徒信条",
+        "right": "起立"
+      },
+      {
+        "label": "交読文",
+        "content": "responsive_reading",
+        "right": "起立"
+      },
+      {
+        "label": "祈祷",
+        "right": "role:prayer"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:1",
+        "right": "一同"
+      },
+      {
+        "label": "聖書朗読",
+        "content": "scripture",
+        "right": "司会者"
+      },
+      {
+        "label": "説教",
+        "content": "sermon_title",
+        "right": "role:preacher"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:2",
+        "right": "一同"
+      },
+      {
+        "label": "献金",
+        "right": "role:offering"
+      },
+      {
+        "label": "祈祷",
+        "right": "role:offering_prayer"
+      },
+      {
+        "label": "報告",
+        "right": "司会者"
+      },
+      {
+        "label": "頌栄",
+        "content": "doxology",
+        "right": "起立"
+      },
+      {
+        "label": "祝祷",
+        "right": "role:benediction"
+      },
+      {
+        "label": "後奏",
+        "right": "黙祷"
+      }
+    ],
+    "extras_presets": {
+      "信仰告白式": {
+        "after": "hymn:1",
+        "content": "param:person",
+        "right": "role:pastor"
+      },
+      "転入会式": {
+        "after": "hymn:1",
+        "content": "param:person",
+        "right": "role:pastor"
+      },
+      "執事就職式": {
+        "after": "hymn:1",
+        "content": "param:person",
+        "right": "role:pastor"
+      },
+      "牧師就職式": {
+        "after": "hymn:1",
+        "content": null,
+        "right": "role:pastor"
+      },
+      "聖餐式": {
+        "after": "sermon_title",
+        "content": "param:hymn",
+        "right": "role:pastor"
+      }
+    }
+  },
+  "schedule": {
+    "title": "本日（{day}日）の予定",
+    "rows": [
+      {
+        "key": "sunday_school",
+        "label": "日曜学校",
+        "time_rule": "sunday_school",
+        "floor": "1階"
+      },
+      {
+        "key": "choir",
+        "label": "聖歌隊練習",
+        "time_rule": "carry",
+        "floor": "3階"
+      },
+      {
+        "key": "prep_praise",
+        "label": "準備賛美",
+        "time": "10:50",
+        "floor": "2階"
+      },
+      {
+        "key": "morning",
+        "label": "午前礼拝",
+        "time": "11:00",
+        "floor": "2階"
+      },
+      {
+        "key": "worship",
+        "label": "ワーシップ",
+        "time_rule": "carry",
+        "floor": "2階"
+      },
+      {
+        "key": "afternoon",
+        "label": "午後礼拝",
+        "time_rule": "afternoon",
+        "floor": "2階"
+      },
+      {
+        "key": "youth",
+        "label": "中高",
+        "time_rule": "carry",
+        "floor": "1階"
+      }
+    ],
+    "sunday_school_time": "10:00",
+    "afternoon_time": "13:30"
+  },
+  "sunday_school": {
+    "title": "ジョイジョイサンデー",
+    "youth_title": "中高科（休会）"
+  },
+  "afternoon": {
+    "time_label": "午後1:30",
+    "worship_song_slots": 4,
+    "program": [
+      {
+        "label": "前奏",
+        "right": "黙想"
+      },
+      {
+        "label": "招詞",
+        "content": "call_to_worship",
+        "right": "司会者"
+      },
+      {
+        "label": "祈り",
+        "right": "司会者"
+      },
+      {
+        "label": "賛美",
+        "content": "worship_songs",
+        "right": "一同"
+      },
+      {
+        "label": "聖書",
+        "content": "scripture",
+        "right": "司会者"
+      },
+      {
+        "label": "説教",
+        "content": "sermon_title",
+        "right": "role:presider_preacher"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn",
+        "right": "一同"
+      },
+      {
+        "label": "祝祷",
+        "right": "role:presider_preacher"
+      },
+      {
+        "label": "後奏"
+      }
+    ]
+  },
+  "next_week": {
+    "morning_title": "主日礼拝",
+    "morning_note": "（ライブ配信も）",
+    "afternoon_title": "午後礼拝",
+    "sunday_school_title": "ジョイジョイサンデー（小学科）",
+    "youth_title": "中高科"
+  },
+  "wednesday": {
+    "title": "水曜祈祷会",
+    "time_label": "午後7時",
+    "program": [
+      {
+        "label": "前奏",
+        "right": "黙祷"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:0",
+        "right": "一同"
+      },
+      {
+        "label": "祈祷",
+        "right": "司会者"
+      },
+      {
+        "label": "聖書朗読",
+        "content": "scripture",
+        "right": "司会者"
+      },
+      {
+        "label": "説教",
+        "content": "sermon_title",
+        "right": "role:presider_preacher"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:1",
+        "right": "一同"
+      },
+      {
+        "label": "祈り",
+        "right": "一同"
+      },
+      {
+        "label": "主の祈り",
+        "right": "一同"
+      },
+      {
+        "label": "後奏"
+      }
+    ]
+  },
+  "prayer_list_title": "覚えて祈りましょう",
+  "announcements_title": "報　　告",
+  "last_week": {
+    "title": "★先週の報告★",
+    "columns": [
+      "集会",
+      "時間",
+      "出席",
+      "献金",
+      "金額"
+    ],
+    "attendance_rows": [
+      {
+        "key": "dawn",
+        "label": "早天祈祷会",
+        "time": "毎朝午前6時"
+      },
+      {
+        "key": "sunday_school",
+        "label": "日曜学校",
+        "time": "午前10時"
+      },
+      {
+        "key": "morning",
+        "label": "主日礼拝",
+        "time": "午前11時"
+      },
+      {
+        "key": "afternoon",
+        "label": "午後礼拝",
+        "time": "午後1時30分"
+      },
+      {
+        "key": "youth",
+        "label": "中高科",
+        "time": "午後2時"
+      },
+      {
+        "key": "wednesday",
+        "label": "水曜祈祷会",
+        "time": "午後7時"
+      }
+    ],
+    "offering_rows": 6
+  },
+  "rules": {
+    "sunday_school_weeks": [
+      1,
+      3
+    ],
+    "afternoon_weeks": [
+      2,
+      4
+    ],
+    "wednesday_offset_days": 3
+  }
+}

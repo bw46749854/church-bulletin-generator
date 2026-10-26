@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>週報</title>
+<link rel="stylesheet" href="bulletin.css">
+</head>
+<body>
+<!-- 1ページ目：式順面 -->
+<div class="page" id="page1">
+  <div class="box" id="morning">
+    <div class="title" id="m-title"></div>
+    <div class="head">
+      <div class="row"><span id="m-date"></span><span class="r"><span class="lbl dist">司会</span><span class="val" id="m-presider"></span></span></div>
+      <div class="row"><span id="m-time"></span><span class="r"><span class="lbl dist">説教</span><span class="val" id="m-preacher"></span></span></div>
+      <div class="row"><span id="m-organist"></span></div>
+    </div>
+    <div class="program" id="m-program" data-fit="program" data-fit-bottom="#m-verse"></div>   <!-- 式順が聖句の上を越えたら赤枠（2 行の題で行が下がるため） -->
+    <div class="verse" id="m-verse"></div>
+  </div>
+
+  <div class="box" id="schedule">
+    <div class="title"><span id="s-title"></span></div>
+    <div class="rows" id="s-rows"></div>
+  </div>
+
+  <div class="box minibox" id="jjs">
+    <div class="title"><span id="j-title"></span></div>
+    <div class="rows" id="j-rows"></div>
+  </div>
+  <div class="box minibox" id="youth">
+    <div class="title"><span id="y-title"></span></div>
+    <div class="rows" id="y-rows"></div>
+  </div>
+
+  <div class="box" id="creed">
+    <div class="title"><span id="c-title"></span></div>
+    <div id="c-text">   <!-- 行は config の lines のとおり（原本の改行）。はみ出す行だけ字間を詰める（data-fit="creed_line"） -->
+      <div class="body" id="c-body"></div>
+      <div class="amen" id="c-amen"></div>
+    </div>
+  </div>
+
+  <div class="box" id="afternoon">
+    <div class="title" id="a-title"></div>
+    <div class="head" id="a-head">   <!-- 3 列の格子：時刻｜「司会・」｜「説教:〜」「奏楽:〜」「案内:〜」。説教・奏楽・案内の頭が縦に揃う。案内は担当者がいる週だけ（2026-10-11） -->
+      <div class="row"><span class="a" id="a-time"></span><span class="c1">司会・</span><span class="c2">説教:<span id="a-presider"></span></span></div>
+      <div class="row"><span class="a"></span><span class="c1"></span><span class="c2">奏楽:<span id="a-organist"></span></span></div>
+      <div class="row" id="a-usher-row" hidden><span class="a"></span><span class="c1"></span><span class="c2">案内:<span id="a-usher"></span></span></div>
+    </div>
+    <div class="program" id="a-program" data-fit="program"></div>
+  </div>
+
+  <div class="box" id="wednesday">
+    <div class="title" id="w-title"></div>
+    <div class="head">
+      <div class="row"><span id="w-date"></span><span>司会・説教:<span id="w-presider"></span></span></div>
+      <div class="row"><span id="w-time"></span><span>奏楽:<span id="w-organist"></span></span></div>
+    </div>
+    <div class="program" id="w-program" data-fit="program"></div>
+  </div>
+
+  <div class="box" id="nextweek">
+    <div class="title"><span id="n-title"></span></div>
+    <div id="n-body"></div>
+  </div>
+
+  <div class="box" id="prayer">
+    <div class="title"><span id="p-title"></span></div>
+    <ol id="p-list" data-fit="prayer"></ol>
+  </div>
+</div>
+
+<!-- 2ページ目：報告面・表紙 -->
+<div class="page" id="page2">
+  <div class="box" id="announce">
+    <div class="title" id="an-title"></div>
+    <div class="items" id="an-items" data-fit="announcements" data-fit-bottom="#announce .foot"></div>
+    <div class="foot">
+      <div class="contact" id="an-contact"></div>
+      <div class="lw" id="lw-title"></div>
+      <div class="note" id="lw-note"></div>
+    </div>
+    <!-- 先週の報告の表：枠線は #announce の枠と共有（表は内側の線だけ引く）。別要素にすると端数の丸めで線がずれて二重に見える -->
+    <table id="lastweek">
+      <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"></colgroup>
+      <tbody id="lw-rows"></tbody>
+    </table>
+  </div>
+
+  <div class="box" id="cover">
+    <div class="dateline"><span id="cv-date"></span><span id="cv-no"></span></div>
+    <div class="bt" id="cv-title"></div>
+    <div class="motto1" id="cv-motto1"></div>
+    <div class="motto2" id="cv-motto2"></div>
+    <img class="church" src="church.png" alt="">
+    <div class="sep"></div>
+    <img class="logo" src="logo.png" alt="サンプル教団 サンプル教会">
+    <div class="addr" id="cv-addr"></div>
+  </div>
+</div>
+
+<script id="data-week" type="application/json"></script>
+<script id="data-config" type="application/json"></script>
+<script id="data-people" type="application/json"></script>
+<script id="data-hymns" type="application/json"></script>
+<script id="data-readings" type="application/json"></script>
+<script id="data-prayer" type="application/json"></script>
+<script id="data-texts" type="application/json"></script>
+<script id="data-fit" type="application/json"></script>
+<script id="data-options" type="application/json"></script>
+<script src="render.js"></script>
+</body>
+</html>

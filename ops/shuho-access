@@ -1,0 +1,49 @@
+#!/usr/bin/env bash
+# リハーサル環境（Cloudflare Access の後ろ）を「読む」ためだけの入口。
+#   設置: sudo install -m 755 -o root -g root ops/shuho-access /usr/local/bin/shuho-access
+#   許可: /etc/sudoers.d/shuho-access に  <user> ALL=(root) NOPASSWD: /usr/local/bin/shuho-access
+#   合言葉: /etc/shuho/access.env（root:root 600。CF_ACCESS_CLIENT_ID / CF_ACCESS_CLIENT_SECRET）
+#
+# root 権限で動くので、受け取るものを極限まで削ってある:
+#   ・引数は「/ で始まるパス」1 つだけ。curl のフラグも URL も渡せない（-o で root としてファイルを壊せないように）
+#   ・--get で GET に固定（書き込みの経路をコードとして持たない）
+#   ・出力は標準出力のみ。ヘッダを出す手段がないので合言葉は画面に出ない
+#
+# さらに「取れるパス」も絞ってある。合言葉を隠しても、その先の実データ（実名の名簿・出席・献金額・
+# 牧師の連絡先）が読めては意味が薄いため。既定では個人情報を含まない診断用のパスだけ通す。
+# 一時的に全部開けたいときは運用者が root で:  sudo touch /etc/shuho/allow-all  （閉じるときは rm）
+# sudo は環境変数を引き継がないので、呼ぶ側（AI や npm スクリプト）からは開けられない。
+set -euo pipefail
+CONF=/etc/shuho/access.env
+SHUHO=https://samplechurch-shuho.example.workers.dev
+SITE=https://samplechurch.example.workers.dev
+
+usage() { echo "usage: shuho-access [--site] /パス   （GET のみ。例: shuho-access /input-shuho/api/engine）" >&2; exit 2; }
+base=$SHUHO
+[ "${1:-}" = "--site" ] && { base=$SITE; shift; }
+[ $# -eq 1 ] || usage
+path=$1
+case "$path" in /*) : ;; *) usage ;; esac
+case "$path" in *[$'\n\r\t ']*) usage ;; esac
+
+# 既定で通すパス（個人情報を含まないもの）。--site（いずれ公開されるページ）は全体を許可
+if [ "$base" = "$SHUHO" ] && [ ! -e /etc/shuho/allow-all ]; then
+  case "${path%%\?*}" in
+    /input-shuho/api/engine|/input-shuho/api/pdf-stats|/input-shuho/api/site-builds \
+    |/input-shuho/api/sync/manifest|/input-shuho/api/public/current) : ;;
+    *) echo "このパスは既定では取れません: $path" >&2
+       echo "名簿・出席・献金額などの実データを含みうるため。必要なら運用者が: sudo touch /etc/shuho/allow-all（終わったら sudo rm /etc/shuho/allow-all）" >&2
+       exit 3 ;;
+  esac
+fi
+
+[ -r "$CONF" ] || { echo "$CONF が読めません（root で実行されていますか）" >&2; exit 2; }
+# shellcheck disable=SC1090
+. "$CONF"
+: "${CF_ACCESS_CLIENT_ID:?$CONF に CF_ACCESS_CLIENT_ID がありません}"
+: "${CF_ACCESS_CLIENT_SECRET:?$CONF に CF_ACCESS_CLIENT_SECRET がありません}"
+
+exec curl -sS --fail-with-body --max-time 60 --get \
+  -H "CF-Access-Client-Id: $CF_ACCESS_CLIENT_ID" \
+  -H "CF-Access-Client-Secret: $CF_ACCESS_CLIENT_SECRET" \
+  "$base$path"

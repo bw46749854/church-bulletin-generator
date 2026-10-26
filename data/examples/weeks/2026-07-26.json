@@ -1,0 +1,279 @@
+{
+  "date": "2026-07-26",
+  "service_name": "主日礼拝",
+  "reception": {
+    "id": "p004",
+    "display": "高橋花子執事"
+  },
+  "morning": {
+    "presider": {
+      "id": "p002",
+      "display": "佐藤一郎長老"
+    },
+    "preacher": {
+      "id": "p001",
+      "display": "山田太郎牧師"
+    },
+    "organist": {
+      "id": "p005",
+      "display": "田中美咲執事"
+    },
+    "prayer": {
+      "id": "p003",
+      "display": "鈴木次郎長老"
+    },
+    "offering": {
+      "id": "p006",
+      "display": "伊藤健執事"
+    },
+    "offering_prayer": "preacher",
+    "benediction": "preacher",
+    "call_to_worship": "申命記8:3",
+    "hymns": [
+      48,
+      485,
+      340
+    ],
+    "responsive_reading": 3,
+    "scripture": {
+      "ref": "マタイ4:1-4",
+      "page": "(2017新約p.5)"
+    },
+    "sermon_title": "荒野での試み①",
+    "sermon_title_break": null,
+    "extras": [],
+    "program": [
+      {
+        "label": "前奏",
+        "right": "黙祷"
+      },
+      {
+        "label": "招詞",
+        "content": "call_to_worship",
+        "right": "司会者"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:0",
+        "right": "起立"
+      },
+      {
+        "label": "使徒信条",
+        "right": "起立"
+      },
+      {
+        "label": "交読文",
+        "content": "responsive_reading",
+        "right": "起立"
+      },
+      {
+        "label": "祈祷",
+        "right": "role:prayer"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:1",
+        "right": "一同"
+      },
+      {
+        "label": "聖書朗読",
+        "content": "scripture",
+        "right": "司会者"
+      },
+      {
+        "label": "説教",
+        "content": "sermon_title",
+        "right": "role:preacher"
+      },
+      {
+        "label": "　証　",
+        "text": "夏季修養会の証し",
+        "right": "牧師"
+      },
+      {
+        "label": "賛美",
+        "content": "hymn:2",
+        "right": "一同"
+      },
+      {
+        "label": "献金",
+        "right": "role:offering"
+      },
+      {
+        "label": "祈祷",
+        "right": "role:offering_prayer"
+      },
+      {
+        "label": "報告",
+        "right": "司会者"
+      },
+      {
+        "label": "頌栄",
+        "content": "doxology",
+        "right": "起立"
+      },
+      {
+        "label": "祝祷",
+        "right": "role:benediction"
+      },
+      {
+        "label": "後奏",
+        "right": "黙祷"
+      }
+    ]
+  },
+  "schedule": {
+    "choir": "休",
+    "worship": "休",
+    "youth": "休"
+  },
+  "sunday_school": {
+    "scripture": "ルカ5:17-26",
+    "title": "中風の人の癒やし",
+    "title_break": null,
+    "presider": {
+      "id": "p004",
+      "display": "高橋花子"
+    },
+    "speaker": {
+      "id": "p003",
+      "display": "鈴木次郎"
+    },
+    "suspended": null
+  },
+  "afternoon": {
+    "presider_preacher": {
+      "id": "p001",
+      "display": "山田太郎牧師"
+    },
+    "organist": null,
+    "usher": null,
+    "usher_shown": false,
+    "call_to_worship": "",
+    "worship_songs": [],
+    "scripture": "",
+    "sermon_title": "",
+    "sermon_title_break": null,
+    "hymn": null,
+    "suspended": null,
+    "next_date": null
+  },
+  "next_week": {
+    "morning": {
+      "presider": {
+        "id": "p003",
+        "display": "鈴木次郎長老"
+      },
+      "prayer": {
+        "id": "p002",
+        "display": "佐藤一郎長老"
+      },
+      "scripture": "マタイ4:5-7",
+      "sermon_title": "荒野での試み②",
+      "sermon_title_break": null,
+      "preacher": {
+        "id": "p001",
+        "display": "山田太郎牧師"
+      }
+    },
+    "afternoon": {
+      "scripture": "ヨシュア4:10-14",
+      "sermon_title": "モーセを恐れたように",
+      "sermon_title_break": null,
+      "preacher": {
+        "id": "p001",
+        "display": "山田太郎牧師"
+      }
+    },
+    "sunday_school": {
+      "presider": null,
+      "scripture": "",
+      "title": "",
+      "title_break": null,
+      "speaker": null
+    },
+    "youth": {
+      "suspended": true,
+      "scripture": "",
+      "title": "",
+      "title_break": null
+    }
+  },
+  "wednesday": {
+    "presider_preacher": {
+      "id": "p001",
+      "display": "山田太郎牧師"
+    },
+    "organist": {
+      "id": "p004",
+      "display": "高橋花子執事"
+    },
+    "hymns": [
+      214,
+      204
+    ],
+    "scripture": {
+      "ref": "詩篇114篇",
+      "page": "（2017旧約ｐ1055）"
+    },
+    "sermon_title": "主は高い御位に座し",
+    "sermon_title_break": null
+  },
+  "announcements": {
+    "lead": "主の教会の礼拝にようこそ！　日曜の午前礼拝はネット配信しています。",
+    "body": [
+      "次主日（8/2）礼拝後、愛餐会を行います。食事は教会が用意します。ぜひお残りくださり、お交わりください。13時30分から午後礼拝を行います。ぜひご参加ください。",
+      "夏の行事のためにお祈りください。\n8/3-5夏季修養会（サンプル農園ホテル）\n8/20-22小学生キャンプ（サンプル市少年自然の家）",
+      "9月12日（土）13:30-16:30「CS教師研修会」がサンプル台教会で行われます。CS教師の方、教会学校の働きに関心のある方はぜひご参加ください。教会で車を出します。",
+      "先主日、新来者として山本花子姉（サンプル大学1年）がご出席くださいました。"
+    ],
+    "prayer_for_lead": "ご年配の方や健康のすぐれない方々のためにお祈りください。",
+    "prayer_for": "加藤誠先生、渡辺茂兄、小林幸子姉。"
+  },
+  "last_week": {
+    "note": "主日礼拝は下記人数に加えて各家庭で守られています(5名前後)。",
+    "attendance": {
+      "dawn": "10",
+      "sunday_school": "休",
+      "morning": "30",
+      "afternoon": "15",
+      "youth": "休",
+      "wednesday": "8"
+    },
+    "offering": [
+      {
+        "name": "主日献金",
+        "amount": "30000"
+      },
+      {
+        "name": "什一献金",
+        "amount": "70000"
+      },
+      {
+        "name": "宣教献金",
+        "amount": "10000"
+      },
+      {
+        "name": "感謝献金",
+        "amount": "10000"
+      },
+      {
+        "name": "世界宣教献金",
+        "amount": "20000"
+      },
+      {
+        "name": "",
+        "amount": "0"
+      }
+    ]
+  },
+  "slides": {
+    "sermon_refs": [
+      "申命記8:3",
+      "ヘブル4:15"
+    ],
+    "afternoon_refs": [],
+    "wednesday_refs": [],
+    "other_refs": []
+  }
+}

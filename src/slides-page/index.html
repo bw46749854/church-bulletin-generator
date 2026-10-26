@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スライド担当</title>
+<link rel="stylesheet" href="admin.css">   <!-- 牧師の画面と同じ見た目（src/admin/admin.css をそのまま使う） -->
+<link rel="stylesheet" href="slides.css">
+</head>
+<body>
+<!-- 担当者ページ（docs/slides-role.md）。週報の内容は見るだけ。スライドを作る・PDF を見る・マスタと素材を直す -->
+<header class="top">
+  <span class="brand">スライド担当</span>
+  <!-- 週報｜マスタ（ui/place.mjs。牧師の画面と同じ形）。マスタは週データに書かない（どの週にも共通）ので、週の選択の下には置かない -->
+  <span class="place" role="group" aria-label="開く場所"><button type="button" data-place="week">週報</button><button type="button" data-place="masters">マスタ</button></span>
+  <label class="week-pick for-week">週 <select id="week-select" disabled><option>読み込んでいます…</option></select></label>
+  <span class="common for-masters"><b>どの週にも共通</b>。変更は確かめた後すぐに反映されます</span>
+  <span class="spacer"></span>
+  <span id="who" class="who"></span>
+</header>
+
+<!-- 閉じるまで残る知らせ -->
+<div id="notices" class="notices" aria-live="assertive"></div>
+
+<main class="layout">
+  <div class="form for-week" id="week-view">
+    <nav class="tabs">
+      <button type="button" class="tab active" data-tab="p-slides">スライド</button>
+      <button type="button" class="tab preview-tab" data-tab="p-pdf">週報（PDF）</button>
+    </nav>
+    <!-- ===== スライド（ARCHITECTURE.md §18 の 4 つのエリア。引用聖句は牧師が入れたものを表示するだけ） ===== -->
+    <section class="panel active" id="p-slides">
+      <div class="slide-area" data-area="morning">
+        <h2>主日礼拝</h2>
+        <div class="area-sub">引用聖句 <span class="hint">牧師が入力したもの（説教題のスライドの後に、上から順に節ごとのスライドになります）</span></div>
+        <div class="refs" data-refs-view="sermon_refs"></div>
+        <div class="area-sub prep">準備賛美 <input type="number" min="1" max="999" class="num" data-slides-prep="morning" aria-label="準備賛美の番号"> <span class="prep-title" data-slides-prep-title="morning"></span> <span class="hint">作るたびに入れます（保存しません）。空なら準備賛美のスライドはテンプレのまま残ります</span></div>
+        <p class="warn slides-need" data-slides-need="morning"></p>
+        <p><button type="button" class="primary" data-slides="morning">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（主日礼拝）のとおり</span></p>
+        <pre class="warn" data-slides-warn="morning"></pre>
+      </div>
+      <div class="slide-area" data-area="afternoon">
+        <h2>午後礼拝</h2>
+        <div class="area-sub">引用聖句</div>
+        <div class="refs" data-refs-view="afternoon_refs"></div>
+        <p class="warn slides-need" data-slides-need="afternoon"></p>
+        <p><button type="button" class="primary" data-slides="afternoon">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（午後礼拝）のとおり。ワーシップ曲は入りません</span></p>
+        <pre class="warn" data-slides-warn="afternoon"></pre>
+      </div>
+      <div class="slide-area" data-area="wednesday">
+        <h2>水曜祈祷会</h2>
+        <div class="area-sub">引用聖句</div>
+        <div class="refs" data-refs-view="wednesday_refs"></div>
+        <p class="warn slides-need" data-slides-need="wednesday"></p>
+        <p><button type="button" class="primary" data-slides="wednesday">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（水曜祈祷会）のとおり</span></p>
+        <pre class="warn" data-slides-warn="wednesday"></pre>
+      </div>
+      <div class="slide-area" data-area="other">
+        <h2>その他</h2>
+        <div class="area-sub">引用聖句</div>
+        <div class="refs" data-refs-view="other_refs"></div>
+        <p><button type="button" class="primary" data-slides="other">スライドを作ってダウンロード</button> <span class="hint">テンプレの式順（その他）のとおり</span></p>
+        <pre class="warn" data-slides-warn="other"></pre>
+      </div>
+      <p class="hint">スライドは、押したときのサーバーの内容（週報・マスタ・pptx）で作ります。引用聖句や週報の内容を直すときは、牧師に伝えてください。</p>
+    </section>
+    <!-- ===== 週報（保存済みの PDF。見るだけ） ===== -->
+    <section class="panel preview" id="p-pdf">
+      <div data-part="pdf-view"></div>   <!-- PDF の表示（ui/pdfview.mjs） -->
+    </section>
+  </div>
+  <!-- ===== マスタ（見出しの「マスタ」で開く。牧師の画面のマスタと同じ部品） ===== -->
+  <div id="masters" class="form for-masters">
+    <section class="panel active">
+      <div data-part="master-files"></div>   <!-- 讃頌歌・交読文のマスタと pptx（ui/masters.mjs） -->
+      <div data-part="templates"></div>   <!-- テンプレ（背景と色・式順・部品。ui/templates.mjs） -->
+      <h2>名簿 <span class="hint">この画面では閲覧のみ。変更は名簿ファイルで</span></h2>
+      <div id="people-list" class="people"></div>
+      <h2>控えを取る <span class="hint">名簿・曲名・交読文・祈り課題・連絡先をひとつの JSON にしてダウンロード</span></h2>
+      <p><button type="button" id="btn-export">マスタ一式をダウンロード</button></p>
+      <div data-part="replace"></div>   <!-- ファイルの差し替え（ui/replace.mjs） -->
+    </section>
+  </div>
+</main>
+<script type="module" src="slides.js"></script>
+</body>
+</html>

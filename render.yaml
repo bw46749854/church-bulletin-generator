@@ -1,0 +1,12 @@
+# Render Blueprint: ダッシュボードの New → Blueprint でこのリポジトリを選ぶと、PDF エンジンの Web Service が作られる（Free、カード不要）。
+services:
+  - type: web
+    name: samplechurch-shuho-pdf
+    runtime: docker
+    plan: free
+    dockerfilePath: ./render/Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: PDF_SECRET
+        generateValue: true   # 生成された値を Worker 側の secret PDF_RENDER_SECRET に同じ値で入れる

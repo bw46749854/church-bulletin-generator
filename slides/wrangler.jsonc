@@ -1,0 +1,20 @@
+{
+  // 担当者用 Worker（docs/slides-role.md）。受付（Access）は Worker 単位で、名簿は shuho-slides（牧師と担当者）。
+  // データは持たない。週報 Worker（samplechurch-shuho）の担当者用の窓口 SlidesWindow を内線（Service Binding）で呼ぶ
+  "$schema": "../node_modules/wrangler/config-schema.json",
+  "name": "samplechurch-slides",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-01",
+  "services": [{ "binding": "SHUHO", "service": "samplechurch-shuho", "entrypoint": "SlidesWindow" }],
+  "assets": {
+    // scripts/build-assets.mjs が src/slides-page と共通の部品（src/ui ほか）を dist-slides/input-shuho/slides/ に集める。
+    // ページ（HTML・JS・CSS）はデータを含まないのでアセットとして直接返す。データは api/ だけ（slides/relay.mjs → 窓口）
+    "directory": "../dist-slides",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "none"
+  },
+  // 受付（Access）の証明を確かめるための値（slides/worker.mjs の identify）。AUD はこの Worker の受付のもの
+  //（Zero Trust のアプリ「samplechurch-slides - Cloudflare Workers」。受付を作り直したら変わる）。アカウントを移したら両方直す
+  "vars": { "ACCESS_TEAM_DOMAIN": "your-team.cloudflareaccess.com", "ACCESS_AUD": "<access-aud-slides>" },
+  "observability": { "enabled": true }
+}

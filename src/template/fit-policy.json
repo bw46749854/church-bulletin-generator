@@ -1,0 +1,19 @@
+{
+  "_note": "欄の役割ごとの縮小手順。上から順に、収まるまで適用する。拡大はしない。scale は文字幅倍率（Word の w:w 相当）。squeeze は字間を詰めて 1 行にちょうど入れる（Word の w:spacing 相当）。gaps は区切りの空き（.gap）を、はみ出した分だけ詰める（値はそれぞれの下限）。原本が倍率で収めていたので、まず倍率、次に文字サイズ。題は自動では折り返さない（2 行は改行位置で人が決める。ARCHITECTURE.md §5.2）。題の欄（8 か所）は 1 行が title、2 行が title_2line で、題を入れてよい幅はどこも _title_width_px（px。一番狭い次週欄・水曜の幅。入力画面の「入るか」も同じ値を使う）。steps が空のもの（program）は、はみ出しを見るだけ。",
+  "person_name":   { "steps": ["scale:0.92", "scale:0.85", "font:9pt", "scale:0.8"] },
+  "title":         { "steps": ["scale:0.92", "scale:0.85", "scale:0.8", "font:9pt", "font:8.5pt"] },
+  "hymn_title":    { "steps": ["scale:0.92", "scale:0.85", "scale:0.8", "scale:0.75", "scale:0.7", "font:9pt", "font:8.5pt"] },
+  "song_title":    { "steps": ["scale:0.92", "scale:0.85", "scale:0.8", "font:9pt"] },
+  "scripture_ref": { "steps": ["scale:0.92", "scale:0.85", "font:9pt"] },
+  "nextweek_val":  { "steps": ["scale:0.92", "scale:0.85", "scale:0.8", "font:9pt"] },
+  "nextweek_body": { "steps": ["gaps:1mm", "line-height:3.45mm", "font:9.5pt", "line-height:3.3mm"] },
+  "title_2line":   { "steps": ["scale:0.92", "scale:0.85", "scale:0.8", "font:8.5pt"] },
+  "program":       { "steps": [] },
+  "box_title":     { "steps": ["scale:0.95", "scale:0.9", "scale:0.85", "font:9pt"] },
+  "contact":       { "steps": ["scale:0.95", "scale:0.9", "font:9pt"] },
+  "creed_line":    { "steps": ["squeeze"] },
+  "prayer":        { "steps": ["line-height:4.1mm", "line-height:3.9mm", "font:9.5pt", "font:9pt", "line-height:3.7mm", "font:8.5pt"] },
+  "announcements": { "steps": ["line-height:6.4mm", "line-height:5.8mm", "line-height:5.2mm", "line-height:4.7mm",
+                               "font:9.5pt", "font:9pt", "font:8.5pt", "font:8pt"] },
+  "_title_width_px": 125
+}

@@ -1,0 +1,79 @@
+{
+  "titles": [
+    "牧師",
+    "長老",
+    "執事",
+    "宣教師",
+    "氏",
+    "先生",
+    "兄",
+    "姉",
+    "スタッフ"
+  ],
+  "people": [
+    {
+      "id": "p001",
+      "name": "山田太郎",
+      "title": "牧師",
+      "flags": []
+    },
+    {
+      "id": "p002",
+      "name": "佐藤一郎",
+      "title": "長老",
+      "flags": []
+    },
+    {
+      "id": "p003",
+      "name": "鈴木次郎",
+      "title": "長老",
+      "flags": [
+        "cs_teacher"
+      ]
+    },
+    {
+      "id": "p004",
+      "name": "高橋花子",
+      "title": "執事",
+      "flags": [
+        "cs_teacher"
+      ]
+    },
+    {
+      "id": "p005",
+      "name": "田中美咲",
+      "title": "執事",
+      "flags": []
+    },
+    {
+      "id": "p006",
+      "name": "伊藤健",
+      "title": "執事",
+      "flags": []
+    },
+    {
+      "id": "p007",
+      "name": "渡辺茂",
+      "title": "兄",
+      "flags": [
+        "elderly_or_ill"
+      ]
+    },
+    {
+      "id": "p008",
+      "name": "小林幸子",
+      "title": "姉",
+      "flags": [
+        "elderly_or_ill"
+      ]
+    },
+    {
+      "id": "p009",
+      "name": "加藤誠",
+      "title": "先生",
+      "flags": [
+        "prayer_list"
+      ]
+    }
+  ]
+}
