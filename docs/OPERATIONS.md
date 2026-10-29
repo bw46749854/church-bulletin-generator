@@ -238,6 +238,8 @@ Linux で Chromium の依存ライブラリが無いときは `sudo npx playwrig
 
 ## Access（受付）
 
+ゼロから作り直す・別のアカウントへ移すときの通しの手順と順番は `docs/cloudflare-setup.md`。
+
 サイト（`samplechurch`）・入力画面（`samplechurch-shuho`）・担当者ページ（`samplechurch-slides`）の Worker に Cloudflare Access を掛けている。
 Worker 単位でしか掛けられない（パスで分けるにはカードが要る）ので、**人はログイン、機械はサービストークン**で分け、役割は Worker を分けて分ける。
 設定は Workers & Pages → Worker →「Access」タブ、名簿の中身は Zero Trust の「ポリシー」画面（`/one/access-controls/policies`）。どちらもカード不要。

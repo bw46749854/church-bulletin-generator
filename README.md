@@ -255,6 +255,7 @@ Worker の形のまま試すときは、`npm run dev` を動かしたまま別�
 
 - [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) — 設計と仕様の正本（データの置き場、画面の操作とサーバーで起きること、PDF、認証、既知の問題）
 - [docs/OPERATIONS.md](docs/OPERATIONS.md) — 運用の手順書（デプロイ、Access、同期、障害時の復旧）
+- [docs/cloudflare-setup.md](docs/cloudflare-setup.md) — Cloudflare（Zero Trust・Access・Workers Builds・トークン）と Render を、ゼロから作り直す手順と順番
 - [docs/slides-role.md](docs/slides-role.md) — スライド担当の権限をどう分けたか（検討した案と判断の理由）
 - [docs/file-store.md](docs/file-store.md) — 版を残すファイルの置き場の設計
 - [docs/requirements-todo.md](docs/requirements-todo.md) — 要件の検討記録
