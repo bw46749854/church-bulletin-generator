@@ -15,7 +15,9 @@
       "id": "p001",
       "name": "山田太郎",
       "title": "牧師",
-      "flags": []
+      "flags": [
+        "pastor"
+      ]
     },
     {
       "id": "p002",
@@ -33,7 +35,7 @@
     },
     {
       "id": "p004",
-      "name": "高橋花子",
+      "name": "村山花子",
       "title": "執事",
       "flags": [
         "cs_teacher"
@@ -43,7 +45,9 @@
       "id": "p005",
       "name": "田中美咲",
       "title": "執事",
-      "flags": []
+      "flags": [
+        "organist"
+      ]
     },
     {
       "id": "p006",

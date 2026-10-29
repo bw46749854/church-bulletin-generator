@@ -30,11 +30,11 @@
     "benediction": "preacher",
     "call_to_worship": "申命記8:3",
     "hymns": [
+      4,
       3,
-      2,
       1
     ],
-    "responsive_reading": 3,
+    "responsive_reading": 2,
     "scripture": {
       "ref": "マタイ4:1-4",
       "page": "(2017新約p.5)"
@@ -86,11 +86,6 @@
         "right": "role:preacher"
       },
       {
-        "label": "　証　",
-        "text": "夏季修養会の証し",
-        "right": "牧師"
-      },
-      {
         "label": "賛美",
         "content": "hymn:2",
         "right": "一同"
@@ -133,7 +128,7 @@
     "title_break": null,
     "presider": {
       "id": "p004",
-      "display": "高橋花子"
+      "display": "村山花子"
     },
     "speaker": {
       "id": "p003",
@@ -142,10 +137,7 @@
     "suspended": null
   },
   "afternoon": {
-    "presider_preacher": {
-      "id": "p001",
-      "display": "山田太郎牧師"
-    },
+    "presider_preacher": null,
     "organist": null,
     "usher": null,
     "usher_shown": false,
@@ -155,7 +147,7 @@
     "sermon_title": "",
     "sermon_title_break": null,
     "hymn": null,
-    "suspended": null,
+    "suspended": true,
     "next_date": null
   },
   "next_week": {
@@ -205,8 +197,8 @@
       "display": "山田太郎牧師"
     },
     "organist": {
-      "id": "p004",
-      "display": "高橋花子執事"
+      "id": "p005",
+      "display": "田中美咲執事"
     },
     "hymns": [
       2,
