@@ -1,8 +1,6 @@
 {
-  "_note": "サンプル。本物は data/masters/readings.json（Git 外）",
+  "_note": "サンプル。本文は data/examples/files/readings/ の交読文（口語訳聖書）。本物は data/masters/readings.json（Git 外）",
   "1": "詩篇1篇",
-  "2": "詩篇2篇",
-  "3": "詩篇4篇",
-  "4": "詩篇8篇",
-  "5": "詩篇13篇"
+  "2": "詩篇23篇",
+  "3": "マタイ5:1-12"
 }

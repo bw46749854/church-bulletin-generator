@@ -67,13 +67,25 @@ iPad の Safari では、ダウンロードの確認が出ている間にペー�
 
 ## 動かし方（手元）
 
+Cloudflare のアカウントは要りません。D1・KV は wrangler の手元の模擬環境で動きます。
+
 ```bash
 npm install
-npm run dev        # http://localhost:8787/input-shuho/ （data/examples/ のサンプルで動く）
+npx playwright install --with-deps chromium   # PDF の生成に使う
+npm run demo       # 見本一式を手元の D1・KV と data/ に入れる（聖書は初回に口語訳を取得）
+npm run dev        # http://localhost:8787/input-shuho/
 npm test
 ```
 
-PDF の生成には Chromium が要ります（`npx playwright install chromium`）。
+Worker の形のまま試すときは、`npm run dev` を動かしたまま別の端末で `npm run dev:worker` を開きます（http://localhost:8788/input-shuho/。PDF は `npm run dev` を借ります）。
+礼拝スライドはコマンドでも作れます: `node scripts/make-slides.mjs worship data/weeks/2026-07-26.json out/worship.pptx --prep 4`
+
+### デモの素材について
+
+- 教会・名簿・週の内容はすべて架空です（`data/examples/`）
+- スライドのテンプレート（`data/examples/files/template/`）は、色（えんじ・クリーム・金）・フォント（BIZ UDPゴシック）・枠の絵をデモ用に差し替えたもの
+- 歌詞（`data/examples/files/hymns/`）は、著作権の切れた英語の原詩（Amazing Grace など 5 曲と頌栄）から、このリポジトリのために新しく訳したもの
+- 交読文と聖書本文は口語訳聖書（1954/1955 年版。著作権の保護期間が満了）。出典は [seven1m/open-bibles](https://github.com/seven1m/open-bibles)（Public Domain）
 
 ## 文書
 

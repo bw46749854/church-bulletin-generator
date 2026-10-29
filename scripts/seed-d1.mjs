@@ -4,7 +4,7 @@
 //   例: node scripts/seed-d1.mjs data/examples --remote      サンプル一式
 //       node scripts/seed-d1.mjs data/church.json --remote   実物の church.json だけ差し替え
 //   --remote が無ければ wrangler dev のローカル D1（.wrangler/state）に入る
-import { readdirSync, statSync, readFileSync, writeFileSync } from 'node:fs';
+import { readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, relative, join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { SCHEMA } from '../src/lib/store-d1.mjs';
@@ -29,5 +29,6 @@ for (const file of files) {
   console.log('put', key);
 }
 const tmp = resolve(import.meta.dirname, '../.wrangler/seed.sql');
+mkdirSync(resolve(import.meta.dirname, '../.wrangler'), { recursive: true });   // clone 直後は .wrangler が無い
 writeFileSync(tmp, sql.join('\n'));
 execFileSync('npx', ['wrangler', 'd1', 'execute', 'samplechurch-shuho', '--file', tmp, remote ? '--remote' : '--local', '-y'], { stdio: 'inherit' });

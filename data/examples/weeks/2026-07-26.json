@@ -30,9 +30,9 @@
     "benediction": "preacher",
     "call_to_worship": "申命記8:3",
     "hymns": [
-      48,
-      485,
-      340
+      3,
+      2,
+      1
     ],
     "responsive_reading": 3,
     "scripture": {
@@ -209,8 +209,8 @@
       "display": "高橋花子執事"
     },
     "hymns": [
-      214,
-      204
+      2,
+      1
     ],
     "scripture": {
       "ref": "詩篇114篇",

@@ -24,6 +24,8 @@ dist-slides/
 data/files/
 data/index/
 data/bible.sqlite
+data/kougo.db
+data/jpn-kougo.osis.xml
 
 # Cloudflare Access のサービストークン（私＝Claude がリハーサル環境を見るための合言葉）
 .access.local
