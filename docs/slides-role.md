@@ -154,7 +154,7 @@
 | Worker | 受付の名簿 |
 |---|---|
 | `samplechurch-shuho`（牧師） | `shuho-editors`（牧師）、`Cloudflare account members`（開発者）、`shuho-server-jobs-auth`（PDF エンジン・サイトのビルド）、`claude-dev-auth`（開発の確認用） |
-| `samplechurch-slides`（担当者） | `shuho-slides`（担当者と牧師） |
+| `samplechurch-slides`（担当者） | `shuho-slides`（担当者と牧師）、`claude-dev-auth`（開発の確認用）、`Cloudflare account members`（開発者）。2026-10-29 に Access の API で確かめた |
 | `samplechurch`（ホームページ） | いまのまま。本番は公開ページなので受付なし |
 
 操作する画面: **Workers & Pages → Worker → 「Access」タブ →「アクセスを管理」**。名簿の中身は Zero Trust の「ポリシー」画面（`/one/access-controls/policies`）。どちらもカード不要。
@@ -263,7 +263,7 @@
 
 **2 つの Worker とも同じ形にした（本番移行のときと同じ形）**:
 - Cloudflare の新しいプレビューの方式（Worker Previews）は**有効にしたうえで、「プレビューブランチのビルド」はオフ**。
-- 代わりに、main 以外のブランチ用のビルド設定を **API で足してある**（名前「Deploy non-production branches」、main 以外で `npm run build` → `npx wrangler versions upload`。担当者用は `-c slides/wrangler.jsonc` 付き）。週報 `e13693fc…`、担当者用 `0347e933…`。
+- 代わりに、main 以外のブランチ用のビルド設定を **API で足してある**（名前「Deploy non-production branches」、main 以外で `npm run build` → `npx wrangler versions upload`。担当者用は `-c slides/wrangler.jsonc` 付き）。週報・担当者用それぞれに 1 本（ID は省略）。
 - これで preview に push すると、2 つとも**本番の Worker の別の版**としてプレビュー版ができる（本番と同じ D1・KV・シークレット）。URL は `https://preview-samplechurch-shuho.example.workers.dev/input-shuho/` と `https://preview-samplechurch-slides.example.workers.dev/input-shuho/slides/`。
 - 予備: `npm run preview:slides`（担当者用を手元から出す）。
 

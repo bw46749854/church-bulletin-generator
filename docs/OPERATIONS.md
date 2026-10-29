@@ -242,9 +242,16 @@ Linux で Chromium の依存ライブラリが無いときは `sudo npx playwrig
 Worker 単位でしか掛けられない（パスで分けるにはカードが要る）ので、**人はログイン、機械はサービストークン**で分け、役割は Worker を分けて分ける。
 設定は Workers & Pages → Worker →「Access」タブ、名簿の中身は Zero Trust の「ポリシー」画面（`/one/access-controls/policies`）。どちらもカード不要。
 
-- 人（メール一覧＋One-time PIN。相手は Cloudflare アカウント不要）:
-  週報 `samplechurch-shuho` は `shuho-editors`（牧師）と `Cloudflare account members`（開発者）、担当者用 `samplechurch-slides` は `shuho-slides`（担当者と牧師）、サイト `samplechurch` は `rehearsal-viewers`。
-  **名簿を他の受付と共用しない**（名簿に「Everyone」などを書くと、門番も防げない）
+- 人（メール一覧＋One-time PIN。相手は Cloudflare アカウント不要）と、開発者（Cloudflare のアカウントのメンバー）。
+  各受付のポリシー（2026-10-29 に Access の API で確かめた。上から評価の順。セッションはどれも 24 時間）:
+
+  | 受付（Worker） | ポリシー |
+  |---|---|
+  | 週報 `samplechurch-shuho` | `Cloudflare account members`（開発者）→ `shuho-server-jobs-auth`（サービス認証）→ `claude-dev-auth`（サービス認証）→ `shuho-editors`（牧師） |
+  | 担当者用 `samplechurch-slides` | `shuho-slides`（担当者と牧師）→ `claude-dev-auth`（サービス認証）→ `Cloudflare account members`（開発者） |
+  | サイト `samplechurch` | `Cloudflare account members`（開発者）→ `rehearsal-viewers` → `claude-dev-auth`（サービス認証） |
+
+  **人のメール一覧の名簿（`shuho-editors`・`shuho-slides`・`rehearsal-viewers`）は受付どうしで共用しない**（共用しているのは開発者の `Cloudflare account members` とサービストークンのポリシーだけ）。名簿に「Everyone」などを書くと、門番も防げない
 - 機械: サービストークン `shuho-server-jobs` ＋ ポリシー `shuho-server-jobs-auth`（アクション **サービス認証**）
   - PDF エンジン: Worker が `CF-Access-Client-Id/Secret` を Chromium の追加ヘッダに入れる（Cloudflare は `page.setExtraHTTPHeaders`、
     Render へは `x-page-headers` で渡して同じことをする）。これで紙面の CSS・JS・フォント（`/shuho-assets/`）を取りに行ける

@@ -456,7 +456,7 @@ Workers Logs では、iPad の保存 5 回はどれもサーバーで成功（20
 - 門番の例外: `public/` の GET と、手元（`wrangler dev`、宛先が localhost）。Cloudflare を通る要求の宛先が localhost になることはない。
 - **受付を作り直すと AUD が変わり、`ACCESS_AUD` を直すまで API は全部 403**（牧師も入れない）。断った理由は返事の `reason` と Workers Logs（`[受付なし]`）に出る。アカウントを移すときは `ACCESS_TEAM_DOMAIN` も直す。
 - 門番が効くのは門番を入れた版（2026-10-23 以降）だけ。過去の版ごとのプレビュー URL（§13）は古いコードのまま動くので、受付が外れるとそこは開く。
-- **担当者用 Worker**（§20）: 受付は名簿 `shuho-slides`。コードも受付の証明を確かめ、**人（メール）の証明が無ければ断る**（機械の証明も通さない）。週報 Worker へは内線で渡し、内線は受付を通らないので、窓口 `SlidesWindow` の許可の一覧がそのまま担当者の権限になる。
+- **担当者用 Worker**（§20）: 受付は名簿 `shuho-slides`（ほかに開発者の `Cloudflare account members` と、開発の確認用のサービストークン `claude-dev-auth`。2026-10-29 に Access の API で確かめた）。コードも受付の証明を確かめ、**人（メール）の証明が無ければ断る**（機械の証明も通さない）。週報 Worker へは内線で渡し、内線は受付を通らないので、窓口 `SlidesWindow` の許可の一覧がそのまま担当者の権限になる。
 
 - **受付のログインが切れたまま API を呼ぶと**、要求は受付で止められる。入力画面の扱いは §6.1。
 - **誰が保存したかは `meta/changes/` に残る**（2026-10-23 から。受付の証明のメール）。それより前の保存は時刻しか残っていない。
@@ -500,9 +500,9 @@ Workers Logs では、iPad の保存 5 回はどれもサーバーで成功（20
 
 | 名前 | 種類 | いまの値・意味 |
 |---|---|---|
-| `DATA` | D1 | `samplechurch-shuho`（`9fd02422-…`） |
-| `BIBLE` | D1 | `samplechurch-bible`（`48d6e82b-…`） |
-| `FILES` | KV | `samplechurch-files`（`e6c4f6e6…`）。素材と PDF の写し |
+| `DATA` | D1 | `samplechurch-shuho`（`<d1-database-id>`） |
+| `BIBLE` | D1 | `samplechurch-bible`（`<d1-bible-database-id>`） |
+| `FILES` | KV | `samplechurch-files`（`<kv-namespace-id>`）。素材と PDF の写し |
 | `BROWSER` | Browser Rendering | Cloudflare の PDF エンジン |
 | `RETAIN_WEEKS` | var | `5`（§4.6。2026-10-23 に 2 から） |
 | `GOOGLE_CLIENT_ID` | var | 空（ログイン無効） |
@@ -515,7 +515,7 @@ Workers Logs では、iPad の保存 5 回はどれもサーバーで成功（20
 | `CF_ACCESS_CLIENT_ID` / `_SECRET` | secret | Access のサービストークン（PDF エンジンが `/shuho-assets/` を読むため） |
 | `ALLOWED_EMAILS` / `SESSION_SECRET` | secret | ログインを有効にするときに入れる |
 
-**配置（deploy）: GitHub の `main` に push すると本番に配置される。** 2026-10-11 に `main` を push した 37 秒後に `samplechurch-shuho` が新しい版（100%）に切り替わったことから、Workers Builds の本番トリガーと推定（ビルドの記録は今の権限では読めない）。ブランチの push では版は作られなかった。
+**配置（deploy）: GitHub の `main` に push すると本番に配置される。** Workers Builds のトリガーは、3 つの Worker（`samplechurch-shuho`・`samplechurch-slides`・サイト `samplechurch`）とも 2 本ずつ（2026-10-29 に Builds の API で確かめた）: 本番用（`main`。`npm run build` → `npx wrangler deploy`）と「Deploy non-production branches」（`main` 以外の全ブランチ。`npm run build` → `npx wrangler versions upload`＝本番を変えずに版とプレビュー URL を作る。§1 の「ブランチと反映」）。担当者用はどちらも `-c slides/wrangler.jsonc`。
 手で配置する `npm run deploy`（`wrangler deploy`）も使える。**牧師が使っている画面を変えたくないときは、`main` に push しない。**
 
 **担当者用 Worker `samplechurch-slides`**（`slides/wrangler.jsonc`。§20）
