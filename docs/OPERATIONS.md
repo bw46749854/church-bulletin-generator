@@ -275,14 +275,19 @@ Access を掛けた結果、開発中の確認（保存済みデータ、エン�
 /etc/shuho/access.env        合言葉                 root:root 600   ← 作業ユーザーからは読めない
 /usr/local/bin/shuho-access  入口（GET のみ）        root:root 755   ← 実行はできるが改造できない
 /etc/sudoers.d/shuho-access  この 1 本だけ NOPASSWD  root:root 440
-/usr/local/bin/shuho-guard   PreToolUse フック       root:root 755   ← 触れようとした時点で止める
-../.claude/settings.json    フックの登録            root:<user> 640
+/usr/local/bin/shuho-guard   PreToolUse フック       root:root 755   ← 任意。いまは未設置（下）
+../.claude/settings.json    フックの登録            root:<user> 640 ← 同上
 ```
 
 原本は `ops/shuho-access` と `ops/shuho-guard`（Git 管理）。設置だけ root で行う。
 `shuho-access` は root で動くため、引数は「/ で始まるパス 1 つ」に限定し `--get` で GET に固定している（`-o` で root としてファイルを壊されないように）。
 `shuho-guard` は禁止語だけを見て止める。正規の入口を「許可」として列挙しない（例外を書くとそこが抜け道になる）。
-ただし合言葉を隔離した時点で `shuho-guard` の値打ちはほとんど無い（読む経路が既に存在しないため）。任意。
+ただし合言葉を隔離した時点で `shuho-guard` の値打ちはほとんど無い（読む経路が既に存在しないため）。任意で、**いまは設置していない**（設置済みなのは `shuho-access`・`/etc/shuho/access.env`・sudoers の 1 行だけ）。
+
+残る弱さ（把握しておけば足りる範囲）:
+- `shuho-access` 自体が root 権限の境界。手を入れるときは引数の扱いを必ず疑う（「パス 1 つだけ」に削ってあるのはそのため）
+- NOPASSWD なので、この PC で作業ユーザーとして動くものは AI に限らず何でも（`npm install` が走らせるスクリプトなども）この入口を使える。ただし取れるのは下の診断用のパスだけ
+- 作業ユーザーはパスワード付きの sudo を持つ。AI はパスワードを入力できないので、それ以外の sudo には進めない、という前提に立っている
 
 合言葉を隠しても、その先の実データが読めては意味が薄い。そこで `shuho-access` は**取れるパスも絞る**:
 既定で通すのは `engine` / `pdf-stats` / `site-builds` / `sync/manifest`（本文を含まない）/ `public/current` と `--site` 配下だけ。
